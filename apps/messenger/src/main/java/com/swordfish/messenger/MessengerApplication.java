@@ -8,5 +8,9 @@ public class MessengerApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(MessengerApplication.class, args);
+
+        System.out.println("+++++++++++++++++++++++++++++++++++++++++");
+        System.out.println("[[ Start Messenger Application Success ]]");
+        System.out.println("+++++++++++++++++++++++++++++++++++++++++");
     }
 }
