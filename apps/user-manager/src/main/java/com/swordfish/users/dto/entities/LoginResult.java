@@ -1,6 +1,6 @@
 package com.swordfish.users.dto.entities;
 
-import com.swordfish.utils.enums.ErrorMessage;
+import com.swordfish.utils.enums.ErrorCode;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,7 +8,7 @@ import lombok.Setter;
 @Setter
 public class LoginResult {
 
-    private ErrorMessage message;
+    private ErrorCode message;
 
     private String token;
 }

@@ -6,7 +6,7 @@ import com.swordfish.users.dto.request.RequestRegister;
 import com.swordfish.users.dto.response.ResponseLogin;
 import com.swordfish.users.service.AccountService;
 import com.swordfish.utils.dto.GeneralResponse;
-import com.swordfish.utils.enums.ErrorMessage;
+import com.swordfish.utils.enums.ErrorCode;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,7 +21,7 @@ public class AccountController {
 
     @PostMapping("/register")
     public GeneralResponse<?> register(@Valid @RequestBody RequestRegister request) {
-        ErrorMessage error = accountService.register(request);
+        ErrorCode error = accountService.register(request);
         return GeneralResponse.of(error);
     }
 
@@ -29,7 +29,7 @@ public class AccountController {
     public GeneralResponse<ResponseLogin> login(@Valid @RequestBody RequestLogin request) {
         LoginResult loginResult = accountService.login(request);
 
-        if (loginResult.getMessage() == ErrorMessage.SUCCESS) {
+        if (loginResult.getMessage() == ErrorCode.SUCCESS) {
              ResponseLogin responseLogin = new ResponseLogin();
              responseLogin.setToken(loginResult.getToken());
              return GeneralResponse.success(responseLogin);

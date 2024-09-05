@@ -5,7 +5,7 @@ import com.swordfish.users.dto.request.RequestLogin;
 import com.swordfish.users.dto.request.RequestRegister;
 import com.swordfish.users.model.AccountModel;
 import com.swordfish.users.repository.AccountRepository;
-import com.swordfish.utils.enums.ErrorMessage;
+import com.swordfish.utils.enums.ErrorCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
@@ -19,9 +19,9 @@ public class AccountService {
     @Autowired
     private AccountRepository accountRepository;
 
-    public ErrorMessage register(RequestRegister request) {
+    public ErrorCode register(RequestRegister request) {
         if (accountRepository.existsByUsername(request.getUsername())) {
-            return ErrorMessage.ACCOUNT_EXIST;
+            return ErrorCode.ACCOUNT_EXIST;
         }
 
         byte[] passwordBytes = request.getPassword().getBytes(StandardCharsets.UTF_8);
@@ -38,7 +38,7 @@ public class AccountService {
 
         accountRepository.save(accountModel);
 
-        return ErrorMessage.SUCCESS;
+        return ErrorCode.SUCCESS;
     }
 
     public LoginResult login(RequestLogin request) {
@@ -46,7 +46,7 @@ public class AccountService {
 
         AccountModel accountModel = accountRepository.findByUsername(request.getUsername()).orElse(null);
         if (accountModel == null) {
-            loginResult.setMessage(ErrorMessage.ACCOUNT_NOT_EXIST);
+            loginResult.setMessage(ErrorCode.ACCOUNT_NOT_EXIST);
             return loginResult;
         }
 
@@ -54,11 +54,11 @@ public class AccountService {
         String passwordHash = DigestUtils.md5DigestAsHex(passwordBytes);
 
         if (!accountModel.getPassword().equals(passwordHash)) {
-            loginResult.setMessage(ErrorMessage.PASSWORD_INCORRECT);
+            loginResult.setMessage(ErrorCode.PASSWORD_INCORRECT);
             return loginResult;
         }
 
-        loginResult.setMessage(ErrorMessage.SUCCESS);
+        loginResult.setMessage(ErrorCode.SUCCESS);
         loginResult.setToken(passwordHash);
 
         return loginResult;
