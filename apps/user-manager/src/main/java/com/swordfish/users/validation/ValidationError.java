@@ -1,5 +1,6 @@
 package com.swordfish.users.validation;
 
+import com.swordfish.utils.dto.InvalidResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -13,11 +14,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 @ControllerAdvice
-public class ValidationCustom {
+public class ValidationError {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, String>> handleValidationErrors(MethodArgumentNotValidException ex) {
+    public ResponseEntity<InvalidResponse> handleValidationErrors(MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();
 
         for (ObjectError error : ex.getBindingResult().getAllErrors()) {
@@ -26,6 +27,10 @@ public class ValidationCustom {
             errors.put(fieldName, message);
         }
 
-        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+        InvalidResponse response = new InvalidResponse();
+        response.setNum(errors.size());
+        response.setErrors(errors);
+
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 }

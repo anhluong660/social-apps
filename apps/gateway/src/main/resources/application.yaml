@@ -9,10 +9,19 @@ spring:
   cloud:
     gateway:
       routes:
+        - id: block-access-inner
+          uri: no://op  # Deny all traffic
+          predicates:
+            - Path=/*/inner/**  # Block any path that contains /{service}/inner/...
+          filters:
+            - SetStatus=403
+
         - id: user-manager
           uri: http://localhost:9001
           predicates:
             - Path=/user-manager/**
+          filters:
+            - StripPrefix=1
 
         - id: messenger
           uri: http://localhost:9002

@@ -1,5 +1,7 @@
 package com.swordfish.users.service;
 
+import com.swordfish.users.dto.entities.LoginResult;
+import com.swordfish.users.dto.request.RequestLogin;
 import com.swordfish.users.dto.request.RequestRegister;
 import com.swordfish.users.model.AccountModel;
 import com.swordfish.users.repository.AccountRepository;
@@ -37,5 +39,28 @@ public class AccountService {
         accountRepository.save(accountModel);
 
         return ErrorMessage.SUCCESS;
+    }
+
+    public LoginResult login(RequestLogin request) {
+        LoginResult loginResult = new LoginResult();
+
+        AccountModel accountModel = accountRepository.findByUsername(request.getUsername()).orElse(null);
+        if (accountModel == null) {
+            loginResult.setMessage(ErrorMessage.ACCOUNT_NOT_EXIST);
+            return loginResult;
+        }
+
+        byte[] passwordBytes = request.getPassword().getBytes(StandardCharsets.UTF_8);
+        String passwordHash = DigestUtils.md5DigestAsHex(passwordBytes);
+
+        if (!accountModel.getPassword().equals(passwordHash)) {
+            loginResult.setMessage(ErrorMessage.PASSWORD_INCORRECT);
+            return loginResult;
+        }
+
+        loginResult.setMessage(ErrorMessage.SUCCESS);
+        loginResult.setToken(passwordHash);
+
+        return loginResult;
     }
 }
