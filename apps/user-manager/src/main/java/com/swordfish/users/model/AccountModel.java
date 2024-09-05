@@ -7,7 +7,7 @@ import java.time.LocalDate;
 
 @Data
 @Document("account")
-public class AccountDO {
+public class AccountModel {
 
     private String username;
 

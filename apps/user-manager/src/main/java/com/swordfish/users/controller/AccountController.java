@@ -1,6 +1,6 @@
 package com.swordfish.users.controller;
 
-import com.swordfish.users.dto.AccountDto;
+import com.swordfish.users.dto.request.RequestRegister;
 import com.swordfish.users.service.AccountService;
 import com.swordfish.utils.dto.GeneralResponse;
 import com.swordfish.utils.enums.ErrorMessage;
@@ -19,8 +19,8 @@ public class AccountController {
     private AccountService accountService;
 
     @PostMapping("/register")
-    public GeneralResponse<?> register(@Valid @RequestBody AccountDto account) {
-        ErrorMessage error = accountService.register(account);
+    public GeneralResponse<?> register(@Valid @RequestBody RequestRegister request) {
+        ErrorMessage error = accountService.register(request);
         return GeneralResponse.of(error);
     }
 }

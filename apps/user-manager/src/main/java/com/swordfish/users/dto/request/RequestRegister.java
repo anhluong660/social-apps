@@ -1,4 +1,4 @@
-package com.swordfish.users.dto;
+package com.swordfish.users.dto.request;
 
 import com.swordfish.users.validation.annotation.BirthDayValid;
 import com.swordfish.users.validation.annotation.SexValid;
@@ -10,7 +10,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class AccountDto {
+public class RequestRegister {
 
     @NotBlank(message = "username is not blank")
     @NotNull(message = "username is not null")
