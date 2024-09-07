@@ -6,6 +6,7 @@ import com.swordfish.users.dto.request.RequestRegister;
 import com.swordfish.users.model.AccountModel;
 import com.swordfish.users.repository.AccountRepository;
 import com.swordfish.users.utils.JwtUtil;
+import com.swordfish.users.utils.UserIdGenerator;
 import com.swordfish.utils.common.SwordFishUtils;
 import com.swordfish.utils.enums.ErrorCode;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,9 @@ public class AccountService {
     private AccountRepository accountRepository;
 
     @Autowired
+    private UserIdGenerator userIdGenerator;
+
+    @Autowired
     private JwtUtil jwtUtil;
 
     public ErrorCode register(RequestRegister request) {
@@ -27,10 +31,12 @@ public class AccountService {
             return ErrorCode.ACCOUNT_EXIST;
         }
 
+        Long newUserId = userIdGenerator.getNewId();
         String passwordHash = SwordFishUtils.hashMd5(request.getPassword());
         LocalDate dateOfBirth = LocalDate.parse(request.getDateOfBirth());
 
         AccountModel accountModel = new AccountModel();
+        accountModel.setUserId(newUserId);
         accountModel.setUsername(request.getUsername());
         accountModel.setPassword(passwordHash);
         accountModel.setFullName(request.getFullName());
@@ -45,7 +51,7 @@ public class AccountService {
     public LoginResult login(RequestLogin request) {
         LoginResult loginResult = new LoginResult();
 
-        AccountModel accountModel = accountRepository.findByUsername(request.getUsername()).orElse(null);
+        AccountModel accountModel = accountRepository.findByUsername(request.getUsername());
         if (accountModel == null) {
             loginResult.setMessage(ErrorCode.ACCOUNT_NOT_EXIST);
             return loginResult;
@@ -58,7 +64,7 @@ public class AccountService {
             return loginResult;
         }
 
-        String jwtToken = jwtUtil.generateToken(accountModel.getUsername());
+        String jwtToken = jwtUtil.generateToken(accountModel.getUserId());
 
         loginResult.setMessage(ErrorCode.SUCCESS);
         loginResult.setToken(jwtToken);

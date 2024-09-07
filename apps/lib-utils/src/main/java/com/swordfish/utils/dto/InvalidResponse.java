@@ -1,5 +1,6 @@
 package com.swordfish.utils.dto;
 
+import com.swordfish.utils.enums.ErrorCode;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,8 +9,6 @@ import java.util.Map;
 @Getter
 @Setter
 public class InvalidResponse {
-
-    private Integer num;
-
-    private Map<String, String> errors;
+    private ErrorCode error;
+    private Map<String, String> detail;
 }

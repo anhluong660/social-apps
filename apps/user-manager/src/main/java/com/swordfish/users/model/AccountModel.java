@@ -9,6 +9,8 @@ import java.time.LocalDate;
 @Document("account")
 public class AccountModel {
 
+    private Long userId;
+
     private String username;
 
     private String password;

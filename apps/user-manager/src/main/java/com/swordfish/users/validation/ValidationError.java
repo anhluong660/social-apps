@@ -1,6 +1,7 @@
 package com.swordfish.users.validation;
 
 import com.swordfish.utils.dto.InvalidResponse;
+import com.swordfish.utils.enums.ErrorCode;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -28,8 +29,8 @@ public class ValidationError {
         }
 
         InvalidResponse response = new InvalidResponse();
-        response.setNum(errors.size());
-        response.setErrors(errors);
+        response.setError(ErrorCode.PARAMS_INVALID);
+        response.setDetail(errors);
 
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }

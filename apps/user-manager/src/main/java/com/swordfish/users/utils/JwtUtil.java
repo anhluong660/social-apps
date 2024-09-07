@@ -18,13 +18,13 @@ public class JwtUtil {
     @Value("${security.jwt-key}")
     private String SECRET_KEY;
 
-    public String generateToken(String username) {
+    public String generateToken(Long userId) {
         long currentMilli = System.currentTimeMillis();
         Key key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
 
         return Jwts.builder()
                 .setClaims(new HashMap<>())
-                .setSubject(username)
+                .setSubject(String.valueOf(userId))
                 .setIssuedAt(new Date(currentMilli))
                 .setExpiration(new Date(currentMilli + EXPIRE_HOURS * 1000 * 60 * 60))
                 .signWith(key)

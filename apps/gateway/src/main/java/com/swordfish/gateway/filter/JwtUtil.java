@@ -21,7 +21,7 @@ public class JwtUtil {
                 .getBody();
     }
 
-    public String getUsername(String token) {
+    public String getUserId(String token) {
         return this.getAllClaimsFromToken(token)
                 .getSubject();
     }
