@@ -5,12 +5,12 @@ import com.swordfish.users.dto.request.RequestLogin;
 import com.swordfish.users.dto.request.RequestRegister;
 import com.swordfish.users.model.AccountModel;
 import com.swordfish.users.repository.AccountRepository;
+import com.swordfish.users.utils.JwtUtil;
+import com.swordfish.utils.common.SwordFishUtils;
 import com.swordfish.utils.enums.ErrorCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.DigestUtils;
 
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 
 @Service
@@ -19,14 +19,15 @@ public class AccountService {
     @Autowired
     private AccountRepository accountRepository;
 
+    @Autowired
+    private JwtUtil jwtUtil;
+
     public ErrorCode register(RequestRegister request) {
         if (accountRepository.existsByUsername(request.getUsername())) {
             return ErrorCode.ACCOUNT_EXIST;
         }
 
-        byte[] passwordBytes = request.getPassword().getBytes(StandardCharsets.UTF_8);
-        String passwordHash = DigestUtils.md5DigestAsHex(passwordBytes);
-
+        String passwordHash = SwordFishUtils.hashMd5(request.getPassword());
         LocalDate dateOfBirth = LocalDate.parse(request.getDateOfBirth());
 
         AccountModel accountModel = new AccountModel();
@@ -50,16 +51,17 @@ public class AccountService {
             return loginResult;
         }
 
-        byte[] passwordBytes = request.getPassword().getBytes(StandardCharsets.UTF_8);
-        String passwordHash = DigestUtils.md5DigestAsHex(passwordBytes);
+        String passwordHash = SwordFishUtils.hashMd5(request.getPassword());
 
         if (!accountModel.getPassword().equals(passwordHash)) {
             loginResult.setMessage(ErrorCode.PASSWORD_INCORRECT);
             return loginResult;
         }
 
+        String jwtToken = jwtUtil.generateToken(accountModel.getUsername());
+
         loginResult.setMessage(ErrorCode.SUCCESS);
-        loginResult.setToken(passwordHash);
+        loginResult.setToken(jwtToken);
 
         return loginResult;
     }
