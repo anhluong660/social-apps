@@ -7,6 +7,7 @@ public enum ErrorCode {
     PARAMS_INVALID,
     ACCOUNT_EXIST,
     ACCOUNT_NOT_EXIST,
+    USER_INFO_NULL,
     PASSWORD_INCORRECT
     ;
 }

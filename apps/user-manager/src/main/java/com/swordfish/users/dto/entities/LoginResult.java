@@ -8,7 +8,11 @@ import lombok.Setter;
 @Setter
 public class LoginResult {
 
-    private ErrorCode message;
+    private ErrorCode error;
+
+    private String nickName;
+
+    private String avatar;
 
     private String token;
 }

@@ -4,6 +4,8 @@ import com.google.gson.Gson;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.time.Instant;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
@@ -51,5 +53,13 @@ public class SwordFishUtils {
         }
 
         return list.get(rand.nextInt(list.size()));
+    }
+
+    /**
+     * @param utcTimeStr: "2024-09-07T12:30:00Z"
+     */
+    public static Date convertToUTCDate(String utcTimeStr) {
+        Instant instant = Instant.parse(utcTimeStr);
+        return Date.from(instant);
     }
 }

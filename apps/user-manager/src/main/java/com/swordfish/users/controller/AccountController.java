@@ -8,6 +8,7 @@ import com.swordfish.users.service.AccountService;
 import com.swordfish.utils.dto.GeneralResponse;
 import com.swordfish.utils.enums.ErrorCode;
 import jakarta.validation.Valid;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,12 +30,12 @@ public class AccountController {
     public GeneralResponse<ResponseLogin> login(@Valid @RequestBody RequestLogin request) {
         LoginResult loginResult = accountService.login(request);
 
-        if (loginResult.getMessage() == ErrorCode.SUCCESS) {
-             ResponseLogin responseLogin = new ResponseLogin();
-             responseLogin.setToken(loginResult.getToken());
-             return GeneralResponse.success(responseLogin);
+        if (loginResult.getError() == ErrorCode.SUCCESS) {
+            ResponseLogin responseLogin = new ResponseLogin();
+            BeanUtils.copyProperties(loginResult, responseLogin);
+            return GeneralResponse.success(responseLogin);
         } else {
-            return GeneralResponse.of(loginResult.getMessage());
+            return GeneralResponse.of(loginResult.getError());
         }
     }
 }
