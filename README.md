@@ -10,14 +10,14 @@ Microservice Application & Spring Boot Framework
 - MongoDB
 - Mysql
 
-### Service
+---
+### Service In Apps
 + Gateway: Port 8080
 + User Manager: Port 9001
 + Messenger: Port 9002
 + Social Service: Port 9003
 
 ---
-### Api document
-+ End Point: http://localhost:8080
-+ Register account: POST => /user-manager/register
-+ Login: POST => /user-manager/login
+### Apps Introduction
++ Authentication with JWT (JSON Web Token)
++ Microservice with Spring Cloud
