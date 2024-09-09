@@ -13,9 +13,12 @@ Microservice Application & Spring Boot Framework
 ---
 ### Service In Apps
 + Gateway: Port 8080
++ +
 + User Manager: Port 9001
 + Messenger: Port 9002
 + Social Service: Port 9003
++ +
++ Medial Service: Port 9100
 
 ---
 ### Apps Introduction

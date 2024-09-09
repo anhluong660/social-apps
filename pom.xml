@@ -22,7 +22,8 @@
 		<module>apps/social-service</module>
 		<module>apps/messenger</module>
 		<module>apps/lib-utils</module>
-	</modules>
+        <module>apps/file-service</module>
+    </modules>
 
 	<properties>
 		<java.version>17</java.version>

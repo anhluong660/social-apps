@@ -45,3 +45,37 @@
     }
 }
 ```
+
+---
+### Upload File
++ Method: POST
++ Path: [http://localhost:9100/upload]()
++ Request:
+```json
+{
+    "data": [1, 3, 4, 5, 9, 7, 23, 31, 92, 43, 29, 22, 6, 9, ...],
+    "type": "jpg"
+}
+```
++ Response:
+```json
+{
+    "error": "SUCCESS",
+    "data": {
+        "url": "https://cloud.service/d801cb81-a185-4786-8f01-9388b3db2518.jpg"
+    }
+}
+```
+
+---
+### Title
++ Method: ?
++ Path: [?]()
++ Request:
+```json
+
+```
++ Response:
+```json
+
+```
