@@ -1,5 +1,6 @@
 package com.swordfish.users.service;
 
+import com.swordfish.users.dto.entities.AccountDto;
 import com.swordfish.users.dto.entities.LoginResult;
 import com.swordfish.users.dto.request.RequestLogin;
 import com.swordfish.users.dto.request.RequestRegister;
@@ -92,5 +93,19 @@ public class AccountService {
         loginResult.setToken(jwtToken);
 
         return loginResult;
+    }
+
+    public AccountDto getAccountInfo(String token) throws Exception {
+        token = token.substring(7);
+        String userId = jwtUtil.getUserId(token);
+
+        if (jwtUtil.isTokenExpired(token)) {
+            throw new RuntimeException();
+        }
+
+        AccountDto accountDto = new AccountDto();
+        accountDto.setError(ErrorCode.SUCCESS);
+        accountDto.setUserId(Long.parseLong(userId));
+        return accountDto;
     }
 }

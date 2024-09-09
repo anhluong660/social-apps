@@ -18,7 +18,7 @@ Microservice Application & Spring Boot Framework
 + Messenger: Port 9002
 + Social Service: Port 9003
 + +
-+ Medial Service: Port 9100
++ File Service: Port 9100
 
 ---
 ### Apps Introduction

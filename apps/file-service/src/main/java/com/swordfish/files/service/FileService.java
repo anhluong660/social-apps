@@ -1,10 +1,13 @@
 package com.swordfish.files.service;
 
+import com.swordfish.files.integration.users.UserManagerFeign;
+import com.swordfish.files.integration.users.dto.AccountDto;
 import com.swordfish.files.utils.FileUploadCloud;
 import com.swordfish.files.utils.FileUploadLocal;
 import com.swordfish.files.utils.FileUploadUtils;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +22,9 @@ public class FileService {
 
     private FileUploadUtils fileUploadUtils;
 
+    @Autowired
+    private UserManagerFeign userManagerFeign;
+
     @PostConstruct
     public void init() {
         this.fileUploadUtils = DEV_MODE ? new FileUploadLocal() : new FileUploadCloud();
@@ -32,5 +38,9 @@ public class FileService {
             log.error("Exception FileService.uploadFile: ", e);
             return "";
         }
+    }
+
+    public AccountDto getAccountInfo(String token) {
+        return userManagerFeign.getAccountInfo(token);
     }
 }

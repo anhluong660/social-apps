@@ -1,5 +1,6 @@
 package com.swordfish.users.utils;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,5 +30,24 @@ public class JwtUtil {
                 .setExpiration(new Date(currentMilli + EXPIRE_HOURS * 1000 * 60 * 60))
                 .signWith(key)
                 .compact();
+    }
+
+    public Claims getAllClaimsFromToken(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(SECRET_KEY.getBytes())
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+    }
+
+    public String getUserId(String token) {
+        return this.getAllClaimsFromToken(token)
+                .getSubject();
+    }
+
+    public boolean isTokenExpired(String token) {
+        return this.getAllClaimsFromToken(token)
+                .getExpiration()
+                .before(new Date());
     }
 }

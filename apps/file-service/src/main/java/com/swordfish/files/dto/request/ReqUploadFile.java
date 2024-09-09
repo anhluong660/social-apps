@@ -1,5 +1,6 @@
 package com.swordfish.files.dto.request;
 
+import com.swordfish.files.validation.annotation.FileTypeValid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -10,10 +11,12 @@ import lombok.Setter;
 @Setter
 public class ReqUploadFile {
 
-    @NotEmpty(message = "data is empty")
+    @NotNull(message = "data must be not null")
+    @NotEmpty(message = "data must be not empty")
     private byte[] data;
 
-    @NotNull(message = "type is null")
-    @NotBlank(message = "type is blank")
+    @NotNull(message = "type must be not null")
+    @NotBlank(message = "type must be not blank")
+    @FileTypeValid(message = "file type is invalid")
     private String type;
 }
