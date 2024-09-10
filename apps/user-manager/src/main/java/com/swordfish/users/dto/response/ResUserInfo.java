@@ -5,11 +5,13 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ResponseLogin {
+public class ResUserInfo {
 
     private String nickName;
 
     private String avatar;
 
-    private String token;
+    private String dateOfBirth;
+
+    private String sex;
 }

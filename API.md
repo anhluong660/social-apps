@@ -39,9 +39,24 @@
 {
     "error": "SUCCESS",
     "data": {
+        "token": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIyMDI0MDkxOCIsImlhdCI6MTcyNTc2OTcwNCwiZXhwIjoxNzI1ODU2MTA0fQ.79FZQEE2LpdSx7_IQkSN5nxQ7DsfjZ99YvWCw9hNqTtiFeyizXTAjl_QQnlaj_Bq"
+    }
+}
+```
+
+---
+### Get User Info
++ Method: POST
++ Path: [/user-manager/user-info]()
++ Response:
+```json
+{
+    "error": "SUCCESS",
+    "data": {
         "nickName": "Nguyen Van A",
         "avatar": "",
-        "token": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIyMDI0MDkxOCIsImlhdCI6MTcyNTc2OTcwNCwiZXhwIjoxNzI1ODU2MTA0fQ.79FZQEE2LpdSx7_IQkSN5nxQ7DsfjZ99YvWCw9hNqTtiFeyizXTAjl_QQnlaj_Bq"
+        "dateOfBirth": "1999-09-07T00:00:00Z",
+        "sex": "Male"
     }
 }
 ```

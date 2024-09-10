@@ -77,18 +77,9 @@ public class AccountService {
             return loginResult;
         }
 
-        // get user info
-        UserModel userModel = userRepository.findByUserId(accountModel.getUserId());
-        if (userModel == null) {
-            loginResult.setError(ErrorCode.USER_INFO_NULL);
-            return loginResult;
-        }
-
         String jwtToken = jwtUtil.generateToken(accountModel.getUserId());
 
         loginResult.setError(ErrorCode.SUCCESS);
-        loginResult.setNickName(userModel.getNickName());
-        loginResult.setAvatar(userModel.getAvatarUrl());
         loginResult.setToken(jwtToken);
 
         return loginResult;
