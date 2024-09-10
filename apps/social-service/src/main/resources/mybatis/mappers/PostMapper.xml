@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.swordfish.social.repository.PostMapper">
+
+    <resultMap id="PostModel" type="com.swordfish.social.model.PostModel">
+        <id column="Id" jdbcType="BIGINT" property="id" />
+        <result column="AuthorId" jdbcType="BIGINT" property="authorId" />
+        <result column="CreateTime" jdbcType="DATE" property="createTime" />
+        <result column="Content" jdbcType="VARCHAR" property="content" />
+        <result column="MediaLink" jdbcType="VARCHAR" property="mediaLink" />
+    </resultMap>
+
+    <insert id="insertNewPost" parameterType="com.swordfish.social.model.PostModel">
+        INSERT INTO Post (AuthorId, CreateTime, Content, MediaLink)
+        VALUES (#{authorId}, #{createTime}, #{content}, #{mediaLink})
+    </insert>
+</mapper>

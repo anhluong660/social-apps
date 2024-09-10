@@ -32,6 +32,8 @@ spring:
           uri: http://localhost:9003
           predicates:
             - Path=/social-service/**
+          filters:
+            - StripPrefix=1
 
       discovery:
         locator:
