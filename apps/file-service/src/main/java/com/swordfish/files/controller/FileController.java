@@ -28,6 +28,9 @@ public class FileController {
         }
 
         AccountDto accountDto = fileService.getAccountInfo(token);
+        if (accountDto.getError() != ErrorCode.SUCCESS) {
+            return GeneralResponse.of(accountDto.getError());
+        }
 
         String path = fileService.uploadFile(fileInfo.getData(), fileInfo.getType());
 

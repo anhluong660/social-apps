@@ -2,8 +2,6 @@ package com.swordfish.files.service;
 
 import com.swordfish.files.integration.users.UserManagerFeign;
 import com.swordfish.files.integration.users.dto.AccountDto;
-import com.swordfish.files.utils.FileUploadCloud;
-import com.swordfish.files.utils.FileUploadLocal;
 import com.swordfish.files.utils.FileUploadUtils;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
@@ -17,8 +15,8 @@ import java.util.UUID;
 @Service
 public class FileService {
 
-    @Value("${server.dev-mode}")
-    private boolean DEV_MODE;
+    @Value("${file.upload.class}")
+    private String FILE_UPLOAD_CLASS;
 
     private FileUploadUtils fileUploadUtils;
 
@@ -27,7 +25,7 @@ public class FileService {
 
     @PostConstruct
     public void init() {
-        this.fileUploadUtils = DEV_MODE ? new FileUploadLocal() : new FileUploadCloud();
+        this.fileUploadUtils = FileUploadUtils.create(FILE_UPLOAD_CLASS);
     }
 
     public String uploadFile(byte[] data, String fileType) {

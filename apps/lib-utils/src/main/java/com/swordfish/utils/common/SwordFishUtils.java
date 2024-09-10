@@ -1,6 +1,7 @@
 package com.swordfish.utils.common;
 
 import com.google.gson.Gson;
+import com.swordfish.utils.exception.CreateInstanceException;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -61,5 +62,14 @@ public class SwordFishUtils {
     public static Date convertToUTCDate(String utcTimeStr) {
         Instant instant = Instant.parse(utcTimeStr);
         return Date.from(instant);
+    }
+
+    public static Object createInstance(String path) {
+        try {
+            Class<?> clazz = Class.forName(path);
+            return clazz.getDeclaredConstructor().newInstance();
+        } catch (Exception e) {
+            throw new CreateInstanceException();
+        }
     }
 }
