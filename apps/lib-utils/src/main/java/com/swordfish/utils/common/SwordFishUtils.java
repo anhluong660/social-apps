@@ -6,6 +6,9 @@ import com.swordfish.utils.exception.CreateInstanceException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
@@ -62,6 +65,12 @@ public class SwordFishUtils {
     public static Date convertToUTCDate(String utcTimeStr) {
         Instant instant = Instant.parse(utcTimeStr);
         return Date.from(instant);
+    }
+
+    public static String convertToUTCStr(Date date) {
+        Instant instant = date.toInstant();
+        ZonedDateTime utcTime = instant.atZone(ZoneOffset.UTC);
+        return utcTime.format(DateTimeFormatter.ISO_INSTANT);
     }
 
     public static Object createInstance(String path) {

@@ -5,7 +5,7 @@
     <resultMap id="PostModel" type="com.swordfish.social.model.PostModel">
         <id column="Id" jdbcType="BIGINT" property="id" />
         <result column="AuthorId" jdbcType="BIGINT" property="authorId" />
-        <result column="CreateTime" jdbcType="DATE" property="createTime" />
+        <result column="CreateTime" jdbcType="TIMESTAMP" property="createTime" />
         <result column="Content" jdbcType="VARCHAR" property="content" />
         <result column="MediaLink" jdbcType="VARCHAR" property="mediaLink" />
     </resultMap>
@@ -14,4 +14,8 @@
         INSERT INTO Post (AuthorId, CreateTime, Content, MediaLink)
         VALUES (#{authorId}, #{createTime}, #{content}, #{mediaLink})
     </insert>
+
+    <select id="findPostByAuthorId" resultMap="PostModel">
+        SELECT* FROM Post WHERE AuthorId = #{authorId}
+    </select>
 </mapper>

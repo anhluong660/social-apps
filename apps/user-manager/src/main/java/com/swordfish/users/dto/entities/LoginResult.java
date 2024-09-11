@@ -11,4 +11,11 @@ public class LoginResult {
     private ErrorCode error;
 
     private String token;
+
+    public static LoginResult error(ErrorCode error) {
+        LoginResult loginResult = new LoginResult();
+        loginResult.setError(error);
+        loginResult.setToken("");
+        return loginResult;
+    }
 }

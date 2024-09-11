@@ -8,6 +8,7 @@ public enum ErrorCode {
     ACCOUNT_EXIST,
     ACCOUNT_NOT_EXIST,
     USER_INFO_NULL,
-    PASSWORD_INCORRECT
+    PASSWORD_INCORRECT,
+    DATABASE_ERROR
     ;
 }

@@ -1,5 +1,6 @@
 package com.swordfish.users.service;
 
+import com.swordfish.users.dto.entities.UserDto;
 import com.swordfish.users.dto.response.ResUserInfo;
 import com.swordfish.users.model.UserModel;
 import com.swordfish.users.repository.UserRepository;
@@ -27,5 +28,17 @@ public class UserManagerService {
         resUserInfo.setDateOfBirth(dateOfBirth);
         resUserInfo.setSex(userModel.getSex());
         return resUserInfo;
+    }
+
+    public UserDto getUserDtoInfo(long userId) {
+        UserModel userModel = userRepository.findByUserId(userId);
+        if (userModel == null) {
+            return null;
+        }
+
+        UserDto userDto = new UserDto();
+        userDto.setNickName(userModel.getNickName());
+        userDto.setAvatar(userModel.getAvatarUrl());
+        return userDto;
     }
 }

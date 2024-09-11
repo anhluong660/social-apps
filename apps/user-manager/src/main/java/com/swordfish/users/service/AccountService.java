@@ -34,7 +34,9 @@ public class AccountService {
     private JwtUtil jwtUtil;
 
     public ErrorCode register(RequestRegister request) {
-        if (accountRepository.existsByUsername(request.getUsername())) {
+        String username = request.getUsername().toLowerCase();
+
+        if (accountRepository.existsByUsername(username)) {
             return ErrorCode.ACCOUNT_EXIST;
         }
 
@@ -44,7 +46,7 @@ public class AccountService {
 
         AccountModel accountModel = new AccountModel();
         accountModel.setUserId(newUserId);
-        accountModel.setUsername(request.getUsername());
+        accountModel.setUsername(username);
         accountModel.setPassword(passwordHash);
         accountRepository.save(accountModel);
 
@@ -63,23 +65,22 @@ public class AccountService {
     }
 
     public LoginResult login(RequestLogin request) {
-        LoginResult loginResult = new LoginResult();
+        String username = request.getUsername().toLowerCase();
 
-        AccountModel accountModel = accountRepository.findByUsername(request.getUsername());
+        AccountModel accountModel = accountRepository.findByUsername(username);
         if (accountModel == null) {
-            loginResult.setError(ErrorCode.ACCOUNT_NOT_EXIST);
-            return loginResult;
+            return LoginResult.error(ErrorCode.ACCOUNT_NOT_EXIST);
         }
 
         String passwordHash = SwordFishUtils.hashMd5(request.getPassword());
 
         if (!accountModel.getPassword().equals(passwordHash)) {
-            loginResult.setError(ErrorCode.PASSWORD_INCORRECT);
-            return loginResult;
+            return LoginResult.error(ErrorCode.PASSWORD_INCORRECT);
         }
 
         String jwtToken = jwtUtil.generateToken(accountModel.getUserId());
 
+        LoginResult loginResult = new LoginResult();
         loginResult.setError(ErrorCode.SUCCESS);
         loginResult.setToken(jwtToken);
 
