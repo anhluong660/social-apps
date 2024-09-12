@@ -7,8 +7,12 @@
         <result column="PostId" jdbcType="BIGINT" property="postId"/>
     </resultMap>
 
-    <select id="findAll" resultMap="LikeModel">
-        SELECT* FROM likes WHERE UserId = #{userId} AND PostId = #{postId}
+    <select id="isLiked" resultType="Integer">
+        SELECT COUNT(*) FROM likes WHERE UserId = #{userId} AND PostId = #{postId}
+    </select>
+
+    <select id="countLiked" resultType="Integer">
+        SELECT COUNT(*) FROM likes WHERE PostId = #{postId}
     </select>
 
 </mapper>
