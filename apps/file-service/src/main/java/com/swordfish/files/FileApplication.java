@@ -15,8 +15,8 @@ public class FileApplication {
     public static void main(String[] args) {
         SpringApplication.run(FileApplication.class, args);
 
-        log.info("+++++++++++++++++++++++++++++++++++++");
+        log.info("++++++++++++++++++++++++++++++++++++");
         log.info("[[ Start File Application Success ]]");
-        log.info("+++++++++++++++++++++++++++++++++++++");
+        log.info("++++++++++++++++++++++++++++++++++++");
     }
 }

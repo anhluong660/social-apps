@@ -1,12 +1,11 @@
 package com.swordfish.files.controller;
 
-import com.swordfish.files.dto.request.ReqUploadFile;
 import com.swordfish.files.dto.response.ResUploadFile;
 import com.swordfish.files.integration.users.dto.AccountDto;
 import com.swordfish.files.service.FileService;
+import com.swordfish.files.utils.FileUtils;
 import com.swordfish.utils.dto.GeneralResponse;
 import com.swordfish.utils.enums.ErrorCode;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -34,7 +33,8 @@ public class FileController {
 
     @PostMapping("/upload")
     public GeneralResponse<ResUploadFile> uploadFile(@RequestHeader("Authorization") String token,
-            @Valid @RequestBody ReqUploadFile fileInfo) {
+                                                     @RequestHeader("Content-Type") String mimeType,
+                                                     @RequestBody byte[] file) {
         if (StringUtils.isEmpty(token)) {
             return GeneralResponse.of(ErrorCode.AUTHENTICATE_ERROR);
         }
@@ -44,7 +44,12 @@ public class FileController {
             return GeneralResponse.of(accountDto.getError());
         }
 
-        String path = fileService.uploadFile(fileInfo.getData(), fileInfo.getType());
+        String fileType = FileUtils.getFileType(mimeType);
+        if (fileType == null) {
+            return GeneralResponse.of(ErrorCode.FILE_TYPE_UNSUPPORTED);
+        }
+
+        String path = fileService.uploadFile(file, fileType);
 
         if (path.isEmpty()) {
             return GeneralResponse.of(ErrorCode.FAIL);
