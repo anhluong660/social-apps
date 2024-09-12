@@ -19,6 +19,8 @@ public class ResponsePost {
 
     private String mediaLink;
 
+    private Boolean isLiked;
+
     private Integer numLikes;
 
     private Integer numComments;

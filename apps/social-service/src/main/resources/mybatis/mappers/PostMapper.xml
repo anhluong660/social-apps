@@ -10,7 +10,7 @@
         <result column="MediaLink" jdbcType="VARCHAR" property="mediaLink" />
     </resultMap>
 
-    <insert id="insertNewPost" parameterType="com.swordfish.social.model.PostModel">
+    <insert id="insertNewPost" parameterType="PostModel">
         INSERT INTO Post (AuthorId, CreateTime, Content, MediaLink)
         VALUES (#{authorId}, #{createTime}, #{content}, #{mediaLink})
     </insert>

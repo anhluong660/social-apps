@@ -4,6 +4,7 @@ import com.swordfish.social.dto.response.ResponsePost;
 import com.swordfish.social.integration.users.UserManagerFeign;
 import com.swordfish.social.integration.users.dto.UserDto;
 import com.swordfish.social.model.PostModel;
+import com.swordfish.social.repository.LikeMapper;
 import com.swordfish.social.repository.PostMapper;
 import com.swordfish.utils.common.SwordFishUtils;
 import com.swordfish.utils.dto.GeneralPageResponse;
@@ -22,6 +23,9 @@ public class PostService {
 
     @Autowired
     private PostMapper postMapper;
+
+    @Autowired
+    private LikeMapper likeMapper;
 
     @Autowired
     private UserManagerFeign userManagerFeign;
@@ -52,6 +56,8 @@ public class PostService {
                 .stream()
                 .map(post -> {
                     String createTime = SwordFishUtils.convertToUTCStr(post.getCreateTime());
+                    boolean isLiked = !likeMapper.findAll(authorId, post.getId()).isEmpty();
+                    int numLikes = likeMapper.findByPostId(post.getId()).size();
 
                     ResponsePost res = new ResponsePost();
                     res.setPostId(post.getId());
@@ -60,7 +66,8 @@ public class PostService {
                     res.setCreateTime(createTime);
                     res.setContent(post.getContent());
                     res.setMediaLink(post.getMediaLink());
-                    res.setNumLikes(0);
+                    res.setIsLiked(isLiked);
+                    res.setNumLikes(numLikes);
                     res.setNumComments(0);
                     return res;
                 }).toList();
