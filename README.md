@@ -19,8 +19,10 @@ Microservice Application & Spring Boot Framework
 + Social Service: Port 9003
 + +
 + File Service: Port 9100
++ Server Discovery: Port 8781
 
 ---
 ### Apps Introduction
 + Authentication with JWT (JSON Web Token)
 + Microservice with Spring Cloud
++ Server discovery support balancing with Eureka Netflix

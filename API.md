@@ -82,8 +82,11 @@
 
 ```json
 {
-    "data": [1, 3, 4, 5, 9, 7, 23, 31, 92, 43, 29, 22, 6, 9],
-    "type": "jpg"
+    "header": {
+      "Authorization": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIyMDI0MDkxOCIsImlhdCI6MTcyNTc2OTcwNCwiZXhwIjoxNzI1ODU2MTA0fQ.79FZQEE2LpdSx7_IQkSN5nxQ7DsfjZ99YvWCw9hNqTtiFeyizXTAjl_QQnlaj_Bq",
+      "Content-Type": "image/jpg"
+    },
+    "body": [82, 3, 4, 2, 34, 56, 21, 39, 45, 98, 64, 28, 1, 28, 23, 12, 34, 89, 86, 56]
 }
 ```
 
@@ -98,6 +101,58 @@
 }
 ```
 
+---
+
+### New Post
+
+- Method: POST
+- Path: [/social-service/new-post]()
+- Request:
+
+```json
+{
+    "content": "This is my post",
+    "mediaLink": "http://image.jpg"
+}
+```
+
+- Response:
+
+```json
+{
+    "error": "SUCCESS",
+    "data": null
+}
+```
+
+---
+
+### Title
+
+- Method: GET
+- Path: [/social-service/my-post-list]()
+- Response:
+
+```json
+{
+    "error": "SUCCESS",
+    "currentPage": 1,
+    "pageSize": 1,
+    "total": 1,
+    "list": [
+        {
+            "postId": 1,
+            "authorName": "Nguyen Van A",
+            "authorAvatar": "avatar.png",
+            "createTime": "2024-09-11T04:19:05Z",
+            "content": "This is my post",
+            "mediaLink": "http://image.jpg",
+            "numLikes": 100,
+            "numComments": 10
+        }
+    ]
+}
+```
 ---
 
 ### Title
