@@ -17,4 +17,9 @@ public class RouterValidator {
                 .stream()
                 .noneMatch(path::startsWith);
     }
+
+    public boolean isBlock(String path) {
+        String[] params = path.split("/");
+        return params.length > 2 && params[2].equals("inner");
+    }
 }

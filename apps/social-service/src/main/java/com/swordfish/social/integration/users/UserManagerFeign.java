@@ -5,7 +5,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-@FeignClient(name = "user-manager", url = "http://localhost:9001")
+@FeignClient(name = "user-manager")
 public interface UserManagerFeign {
 
     @RequestMapping("/inner/user-info/{userId}")

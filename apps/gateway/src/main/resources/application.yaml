@@ -9,27 +9,20 @@ spring:
   cloud:
     gateway:
       routes:
-        - id: block-access-inner
-          uri: no://op  # Deny all traffic
-          predicates:
-            - Path=/*/inner/**  # Block any path that contains /{service}/inner/...
-          filters:
-            - SetStatus=403
-
         - id: user-manager
-          uri: http://localhost:9001
+          uri: lb://user-manager
           predicates:
             - Path=/user-manager/**
           filters:
             - StripPrefix=1
 
         - id: messenger
-          uri: http://localhost:9002
+          uri: lb://messenger
           predicates:
             - Path=/messenger/**
 
         - id: social-service
-          uri: http://localhost:9003
+          uri: lb://social-service
           predicates:
             - Path=/social-service/**
           filters:
@@ -37,7 +30,7 @@ spring:
 
       discovery:
         locator:
-          enabled: false               # enable {true} when use eureka netflix
+          enabled: true
           lowerCaseServiceId: true
 
       httpclient:
@@ -57,7 +50,7 @@ management:
 
 eureka:
   client:
-    enabled: false
+    enabled: true
     serviceUrl:
       defaultZone: http://localhost:8761/eureka/
     registry-fetch-interval-seconds: 10

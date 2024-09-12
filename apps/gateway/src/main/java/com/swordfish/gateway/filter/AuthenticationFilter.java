@@ -2,6 +2,7 @@ package com.swordfish.gateway.filter;
 
 import com.swordfish.utils.common.SwordFishUtils;
 import com.swordfish.utils.dto.InvalidResponse;
+import com.swordfish.utils.dto.ResponseHttp;
 import com.swordfish.utils.enums.ErrorCode;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.security.SignatureException;
@@ -12,6 +13,7 @@ import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
@@ -37,6 +39,9 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
         HttpHeaders headers = request.getHeaders();
         String path = request.getURI().getPath();
 
+        if (routerValidator.isBlock(path)) {
+            return responseBlock(exchange, path);
+        }
 
         if (routerValidator.isSecured(path)) {
             String token = headers.getFirst("Authorization");
@@ -68,6 +73,18 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
         }
 
         return chain.filter(exchange);
+    }
+
+    private Mono<Void> responseBlock(ServerWebExchange exchange, String path) {
+        HttpStatus httpStatus = HttpStatus.NOT_FOUND;
+        ResponseHttp body = new ResponseHttp(httpStatus.value(), httpStatus.getReasonPhrase(), path);
+        String json = SwordFishUtils.toJson(body);
+
+        ServerHttpResponse response = exchange.getResponse();
+        response.setStatusCode(httpStatus);
+        DataBuffer buffer = response.bufferFactory().wrap(json.getBytes(StandardCharsets.UTF_8));
+        response.getHeaders().add("Content-Type", "application/json;charset=UTF-8");
+        return response.writeWith(Mono.just(buffer));
     }
 
     private Mono<Void> responseError(ServerWebExchange exchange, String message) {

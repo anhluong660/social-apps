@@ -23,6 +23,7 @@
 		<module>apps/messenger</module>
 		<module>apps/lib-utils</module>
         <module>apps/file-service</module>
+        <module>apps/discovery</module>
     </modules>
 
 	<properties>
