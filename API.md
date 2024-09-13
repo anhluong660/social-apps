@@ -127,7 +127,7 @@
 
 ---
 
-### Title
+### Get My Post List
 
 - Method: GET
 - Path: [/social-service/my-post-list]()
@@ -153,6 +153,55 @@
     ]
 }
 ```
+---
+
+### Like Post
+
+- Method: POST
+- Path: [/social-service/like-post]()
+- Request:
+
+```json
+{
+    "postId": 1
+}
+```
+
+- Response:
+
+```json
+{
+    "error": "SUCCESS",
+    "data": {
+        "isLiked": true
+    }
+}
+```
+
+---
+
+### Post Comment
+
+- Method: ?
+- Path: [/social-service/comment]()
+- Request:
+
+```json
+{
+    "postId": 1,
+    "content": "Hello World"
+}
+```
+
+- Response:
+
+```json
+{
+    "error": "SUCCESS",
+    "data": null
+}
+```
+
 ---
 
 ### Title
