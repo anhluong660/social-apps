@@ -3,6 +3,7 @@ package com.swordfish.utils.enums;
 public enum ErrorCode {
     SUCCESS,
     FAIL,
+    NOT_FOUND,
     AUTHENTICATE_ERROR,
     PARAMS_INVALID,
     ACCOUNT_EXIST,

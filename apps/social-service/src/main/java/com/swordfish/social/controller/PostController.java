@@ -1,6 +1,9 @@
 package com.swordfish.social.controller;
 
+import com.swordfish.social.dto.request.RequestComment;
+import com.swordfish.social.dto.request.RequestLikePost;
 import com.swordfish.social.dto.request.RequestNewPost;
+import com.swordfish.social.dto.response.ResponseLikePost;
 import com.swordfish.social.dto.response.ResponsePost;
 import com.swordfish.social.service.PostService;
 import com.swordfish.utils.dto.GeneralPageResponse;
@@ -30,5 +33,30 @@ public class PostController {
     @GetMapping("/my-post-list")
     public GeneralPageResponse<ResponsePost> getMyPostList(@RequestHeader("userId") Long userId) {
         return postService.getMyPostList(userId);
+    }
+
+    @PostMapping("/like-post")
+    public GeneralResponse<ResponseLikePost> likePost(@RequestHeader("userId") Long userId,
+                                            @Valid @RequestBody RequestLikePost request) {
+        if (!postService.existPost(request.getPostId())) {
+            return GeneralResponse.of(ErrorCode.NOT_FOUND);
+        }
+
+        boolean isLiked = postService.likePost(userId, request.getPostId());
+
+        ResponseLikePost response = new ResponseLikePost();
+        response.setIsLiked(isLiked);
+        return GeneralResponse.success(response);
+    }
+
+    @PostMapping("/comment")
+    public GeneralResponse<String> postComment(@RequestHeader("userId") Long userId,
+                                           @Valid @RequestBody RequestComment request) {
+        if (!postService.existPost(request.getPostId())) {
+            return GeneralResponse.of(ErrorCode.NOT_FOUND);
+        }
+
+        postService.insertComment(userId, request.getPostId(), request.getContent());
+        return GeneralResponse.success();
     }
 }
