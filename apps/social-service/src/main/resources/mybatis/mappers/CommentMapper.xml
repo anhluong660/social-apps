@@ -11,4 +11,8 @@
     <select id="countComments" resultType="Integer">
         SELECT COUNT(*) FROM comments WHERE PostId = #{postId}
     </select>
+
+    <insert id="insertComment" parameterType="CommentModel">
+        INSERT INTO comments (UserId, PostId, Content) VALUES (#{userId}, #{postId}, #{content})
+    </insert>
 </mapper>

@@ -3,6 +3,7 @@ package com.swordfish.social.service;
 import com.swordfish.social.dto.response.ResponsePost;
 import com.swordfish.social.integration.users.UserManagerFeign;
 import com.swordfish.social.integration.users.dto.UserDto;
+import com.swordfish.social.model.CommentModel;
 import com.swordfish.social.model.PostModel;
 import com.swordfish.social.repository.CommentMapper;
 import com.swordfish.social.repository.LikeMapper;
@@ -98,5 +99,14 @@ public class PostService {
             likeMapper.likePost(userId, postId);
             return true;
         }
+    }
+
+    public void insertComment(long userId, long postId, String content) {
+        CommentModel commentModel = new CommentModel();
+        commentModel.setUserId(userId);
+        commentModel.setPostId(postId);
+        commentModel.setContent(content);
+
+        commentMapper.insertComment(commentModel);
     }
 }

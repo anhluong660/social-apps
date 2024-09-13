@@ -1,5 +1,6 @@
 package com.swordfish.social.controller;
 
+import com.swordfish.social.dto.request.RequestComment;
 import com.swordfish.social.dto.request.RequestLikePost;
 import com.swordfish.social.dto.request.RequestNewPost;
 import com.swordfish.social.dto.response.ResponseLikePost;
@@ -46,5 +47,16 @@ public class PostController {
         ResponseLikePost response = new ResponseLikePost();
         response.setIsLiked(isLiked);
         return GeneralResponse.success(response);
+    }
+
+    @PostMapping("/comment")
+    public GeneralResponse<String> postComment(@RequestHeader("userId") Long userId,
+                                           @Valid @RequestBody RequestComment request) {
+        if (!postService.existPost(request.getPostId())) {
+            return GeneralResponse.of(ErrorCode.NOT_FOUND);
+        }
+
+        postService.insertComment(userId, request.getPostId(), request.getContent());
+        return GeneralResponse.success();
     }
 }
