@@ -85,4 +85,18 @@ public class PostService {
         resultPage.setList(postList);
         return resultPage;
     }
+
+    public boolean existPost(long postId) {
+        return postMapper.existPost(postId) > 0;
+    }
+
+    public boolean likePost(long userId, long postId) {
+        if (likeMapper.isLiked(userId, postId) > 0) {
+            likeMapper.dislikePost(userId, postId);
+            return false;
+        } else {
+            likeMapper.likePost(userId, postId);
+            return true;
+        }
+    }
 }

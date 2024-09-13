@@ -11,6 +11,14 @@
         SELECT COUNT(*) FROM likes WHERE UserId = #{userId} AND PostId = #{postId}
     </select>
 
+    <insert id="likePost" >
+        INSERT INTO likes (UserId, PostId) VALUES (#{userId}, #{postId})
+    </insert>
+
+    <delete id="dislikePost">
+        DELETE FROM likes WHERE UserId = #{userId} AND PostId = #{postId}
+    </delete>
+
     <select id="countLiked" resultType="Integer">
         SELECT COUNT(*) FROM likes WHERE PostId = #{postId}
     </select>
