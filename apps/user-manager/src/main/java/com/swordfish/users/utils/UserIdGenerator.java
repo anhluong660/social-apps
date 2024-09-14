@@ -1,7 +1,6 @@
 package com.swordfish.users.utils;
 
 import com.mongodb.client.model.Sorts;
-import com.swordfish.utils.common.SwordFishUtils;
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,7 +32,7 @@ public class UserIdGenerator {
             }
         }
 
-        userId += SwordFishUtils.randomBetween(5, 25);
+        userId += 1;
 
         return userId;
     }
