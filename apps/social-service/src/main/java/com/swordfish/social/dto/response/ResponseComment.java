@@ -5,9 +5,9 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ResponsePost {
+public class ResponseComment {
 
-    private Long postId;
+    private Long commentId;
 
     private Long authorId;
 
@@ -15,15 +15,5 @@ public class ResponsePost {
 
     private String authorAvatar;
 
-    private String createTime;
-
     private String content;
-
-    private String mediaLink;
-
-    private Boolean isLiked;
-
-    private Integer numLikes;
-
-    private Integer numComments;
 }

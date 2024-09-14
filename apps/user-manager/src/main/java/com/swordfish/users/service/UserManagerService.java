@@ -45,9 +45,21 @@ public class UserManagerService {
         }
 
         UserDto userDto = new UserDto();
+        userDto.setUserId(userModel.getUserId());
         userDto.setNickName(userModel.getNickName());
         userDto.setAvatar(userModel.getAvatarUrl());
         return userDto;
+    }
+
+    public List<UserDto> getUserDtoInfoList(List<Long> userIds) {
+        return userRepository.findAllByUserIds(userIds).stream()
+                .map(userModel -> {
+                    UserDto userDto = new UserDto();
+                    userDto.setUserId(userModel.getUserId());
+                    userDto.setNickName(userModel.getNickName());
+                    userDto.setAvatar(userModel.getAvatarUrl());
+                    return userDto;
+                }).toList();
     }
 
     public boolean existUserById(long userId) {

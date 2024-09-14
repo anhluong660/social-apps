@@ -186,6 +186,7 @@
     "list": [
         {
             "postId": 1,
+            "authorId": 123,
             "authorName": "Nguyen Van A",
             "authorAvatar": "avatar.png",
             "createTime": "2024-09-11T04:19:05Z",

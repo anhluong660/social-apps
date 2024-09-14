@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/inner")
 public class AccountInnerController {
@@ -35,5 +37,10 @@ public class AccountInnerController {
     @RequestMapping("/user-info/{userId}")
     public UserDto getUserInfo(@PathVariable Long userId) {
         return userManagerService.getUserDtoInfo(userId);
+    }
+
+    @RequestMapping("/inner/user-info-list")
+    public List<UserDto> getUserInfoList(@RequestBody List<Long> userIds) {
+        return userManagerService.getUserDtoInfoList(userIds);
     }
 }

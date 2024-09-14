@@ -12,6 +12,10 @@
         SELECT COUNT(*) FROM comments WHERE PostId = #{postId}
     </select>
 
+    <select id="findCommentByPostId" resultType="CommentModel">
+        SELECT* FROM comments WHERE PostId = #{postId}
+    </select>
+
     <insert id="insertComment" parameterType="CommentModel">
         INSERT INTO comments (UserId, PostId, Content) VALUES (#{userId}, #{postId}, #{content})
     </insert>

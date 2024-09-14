@@ -3,6 +3,7 @@ package com.swordfish.social.controller;
 import com.swordfish.social.dto.request.RequestComment;
 import com.swordfish.social.dto.request.RequestLikePost;
 import com.swordfish.social.dto.request.RequestNewPost;
+import com.swordfish.social.dto.response.ResponseComment;
 import com.swordfish.social.dto.response.ResponseLikePost;
 import com.swordfish.social.dto.response.ResponsePost;
 import com.swordfish.social.service.PostService;
@@ -12,10 +13,13 @@ import com.swordfish.utils.enums.ErrorCode;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 public class PostController {
@@ -58,5 +62,15 @@ public class PostController {
 
         postService.insertComment(userId, request.getPostId(), request.getContent());
         return GeneralResponse.success();
+    }
+
+    @GetMapping("/comments/{postId}")
+    public GeneralResponse<List<ResponseComment>> getCommentList(@PathVariable Long postId) {
+        if (!postService.existPost(postId)) {
+            return GeneralResponse.of(ErrorCode.NOT_FOUND);
+        }
+
+        List<ResponseComment> responseCommentList = postService.getCommentList(postId);
+        return GeneralResponse.success(responseCommentList);
     }
 }

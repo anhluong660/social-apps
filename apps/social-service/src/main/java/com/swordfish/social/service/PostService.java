@@ -1,5 +1,6 @@
 package com.swordfish.social.service;
 
+import com.swordfish.social.dto.response.ResponseComment;
 import com.swordfish.social.dto.response.ResponsePost;
 import com.swordfish.social.integration.users.UserManagerFeign;
 import com.swordfish.social.integration.users.dto.UserDto;
@@ -16,6 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -67,6 +70,7 @@ public class PostService {
 
                     ResponsePost res = new ResponsePost();
                     res.setPostId(post.getId());
+                    res.setAuthorId(authorInfo.getUserId());
                     res.setAuthorName(authorInfo.getNickName());
                     res.setAuthorAvatar(authorInfo.getAvatar());
                     res.setCreateTime(createTime);
@@ -108,5 +112,43 @@ public class PostService {
         commentModel.setContent(content);
 
         commentMapper.insertComment(commentModel);
+    }
+
+    public List<ResponseComment> getCommentList(long postId) {
+        List<CommentModel> commentModelList = commentMapper.findCommentByPostId(postId);
+        if (commentModelList.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        List<Long> authorIds = commentModelList.stream()
+                .map(CommentModel::getUserId)
+                .toList();
+
+        List<UserDto> userDtoList = userManagerFeign.getUserInfoList(authorIds);
+
+        List<ResponseComment> responseCommentList = new ArrayList<>();
+
+        for (CommentModel commentModel : commentModelList) {
+            long authorId = commentModel.getUserId();
+
+            UserDto userInfo = userDtoList.stream()
+                    .filter(userDto -> userDto.getUserId() == authorId)
+                    .findFirst().orElse(null);
+
+            if (userInfo == null) {
+                continue;
+            }
+
+            ResponseComment responseComment = new ResponseComment();
+            responseComment.setCommentId(commentModel.getId());
+            responseComment.setAuthorId(userInfo.getUserId());
+            responseComment.setAuthorName(userInfo.getNickName());
+            responseComment.setAuthorAvatar(userInfo.getAvatar());
+            responseComment.setContent(commentModel.getContent());
+
+            responseCommentList.add(responseComment);
+        }
+
+        return responseCommentList;
     }
 }
