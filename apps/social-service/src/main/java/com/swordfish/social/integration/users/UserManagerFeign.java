@@ -5,6 +5,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -16,4 +17,10 @@ public interface UserManagerFeign {
 
     @RequestMapping("/inner/user-info-list")
     List<UserDto> getUserInfoList(@RequestBody List<Long> userIds);
+
+    @RequestMapping("/inner/friendId-list")
+    List<Long> getFriendIdList(@RequestParam Long userId);
+
+    @RequestMapping("/inner/all-userId-list")
+    List<Long> getAllUserIdList();
 }

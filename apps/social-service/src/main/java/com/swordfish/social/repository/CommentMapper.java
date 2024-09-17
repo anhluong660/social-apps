@@ -8,8 +8,6 @@ import java.util.List;
 @Mapper
 public interface CommentMapper {
 
-    int countComments(Long postId);
-
     List<CommentModel> findCommentByPostId(Long postId);
 
     void insertComment(CommentModel commentModel);

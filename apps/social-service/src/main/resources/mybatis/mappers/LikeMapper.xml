@@ -19,8 +19,4 @@
         DELETE FROM likes WHERE UserId = #{userId} AND PostId = #{postId}
     </delete>
 
-    <select id="countLiked" resultType="Integer">
-        SELECT COUNT(*) FROM likes WHERE PostId = #{postId}
-    </select>
-
 </mapper>

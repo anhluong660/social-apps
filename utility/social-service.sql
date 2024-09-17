@@ -5,7 +5,7 @@ CREATE TABLE Post
 (
 	Id BIGINT AUTO_INCREMENT,
     AuthorId BIGINT NOT NULL,
-    CreateTime DATE NOT NULL,
+    CreateTime TIMESTAMP NOT NULL,
     Content VARCHAR(2000),
     MediaLink VARCHAR(200),
     PRIMARY KEY (ID)

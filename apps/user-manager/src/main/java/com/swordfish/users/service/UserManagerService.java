@@ -4,11 +4,11 @@ import com.swordfish.users.dto.entities.UserDto;
 import com.swordfish.users.dto.response.ResFriendInfo;
 import com.swordfish.users.dto.response.ResUserInfo;
 import com.swordfish.users.model.UserModel;
+import com.swordfish.users.repository.UserRepoCustom;
 import com.swordfish.users.repository.UserRepository;
 import com.swordfish.utils.enums.ErrorCode;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +20,9 @@ public class UserManagerService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private UserRepoCustom userRepoCustom;
 
     public ResUserInfo getUserInfo(long userId) {
         UserModel userModel = userRepository.findByUserId(userId);
@@ -126,5 +129,18 @@ public class UserManagerService {
         }
 
         return getFriendInfoListByUserIds(userModel.getInviters());
+    }
+
+    public List<Long> getFriendIdList(long userId) {
+        UserModel userModel = userRepository.findByUserId(userId);
+        if (userModel == null) {
+            return Collections.emptyList();
+        }
+
+        return userModel.getFriends();
+    }
+
+    public List<Long> getAllUserIdList() {
+        return userRepoCustom.findAllUserIds();
     }
 }

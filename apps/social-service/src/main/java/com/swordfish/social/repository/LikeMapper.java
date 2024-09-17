@@ -10,6 +10,4 @@ public interface LikeMapper {
     void likePost(Long userId, Long postId);
 
     void dislikePost(Long userId, Long postId);
-
-    int countLiked(Long postId);
 }

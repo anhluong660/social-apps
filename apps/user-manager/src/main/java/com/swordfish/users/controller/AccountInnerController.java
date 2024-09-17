@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -39,8 +40,18 @@ public class AccountInnerController {
         return userManagerService.getUserDtoInfo(userId);
     }
 
-    @RequestMapping("/inner/user-info-list")
+    @RequestMapping("/user-info-list")
     public List<UserDto> getUserInfoList(@RequestBody List<Long> userIds) {
         return userManagerService.getUserDtoInfoList(userIds);
+    }
+
+    @RequestMapping("/friendId-list")
+    public List<Long> getFriendIdList(@RequestParam Long userId) {
+        return userManagerService.getFriendIdList(userId);
+    }
+
+    @RequestMapping("/all-userId-list")
+    public List<Long> getAllUserIdList() {
+        return userManagerService.getAllUserIdList();
     }
 }

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -29,7 +30,11 @@ public class PostController {
 
     @PostMapping("/new-post")
     public GeneralResponse<String> addNewPost(@RequestHeader("userId") Long userId,
-            @Valid @RequestBody RequestNewPost request) {
+            @RequestBody RequestNewPost request) {
+        if (request.invalid()) {
+            return GeneralResponse.of(ErrorCode.PARAMS_INVALID);
+        }
+
         ErrorCode error = postService.addNewPost(userId, request.getContent(), request.getMediaLink());
         return GeneralResponse.of(error);
     }
@@ -37,6 +42,12 @@ public class PostController {
     @GetMapping("/my-post-list")
     public GeneralPageResponse<ResponsePost> getMyPostList(@RequestHeader("userId") Long userId) {
         return postService.getMyPostList(userId);
+    }
+
+    @GetMapping("/post-list")
+    public GeneralPageResponse<ResponsePost> getPostList(@RequestHeader("userId") Long userId,
+                                                     @RequestParam Integer page) {
+        return postService.getPostList(userId, page);
     }
 
     @PostMapping("/like-post")

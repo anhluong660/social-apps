@@ -16,4 +16,10 @@ public class PostModel {
     private String content;
 
     private String mediaLink;
+
+    private Boolean isLiked;
+
+    private Integer likeCount;
+
+    private Integer commentCount;
 }

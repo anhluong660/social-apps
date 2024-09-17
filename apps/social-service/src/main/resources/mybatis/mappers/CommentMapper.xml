@@ -8,10 +8,6 @@
         <result column="Content" jdbcType="VARCHAR" property="content"/>
     </resultMap>
 
-    <select id="countComments" resultType="Integer">
-        SELECT COUNT(*) FROM comments WHERE PostId = #{postId}
-    </select>
-
     <select id="findCommentByPostId" resultType="CommentModel">
         SELECT* FROM comments WHERE PostId = #{postId}
     </select>
