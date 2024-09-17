@@ -200,6 +200,33 @@
 ```
 ---
 
+### Get Post List
+- Method: GET
+- Path: [/social-service/post-list?page=1]()
+- Response:
+```json
+{
+    "error": "SUCCESS",
+    "currentPage": 1,
+    "pageSize": 1,
+    "total": 1,
+    "list": [
+        {
+            "postId": 1,
+            "authorId": 123,
+            "authorName": "Nguyen Van A",
+            "authorAvatar": "avatar.png",
+            "createTime": "2024-09-11T04:19:05Z",
+            "content": "This is my post",
+            "mediaLink": "http://image.jpg",
+            "numLikes": 100,
+            "numComments": 10
+        }
+    ]
+}
+```
+---
+
 ### Like Post
 - Method: POST
 - Path: [/social-service/like-post]()
@@ -222,7 +249,7 @@
 ---
 
 ### Post Comment
-- Method: ?
+- Method: POST
 - Path: [/social-service/comment]()
 - Request:
 ```json
@@ -238,7 +265,33 @@
     "data": null
 }
 ```
+---
 
+### Get All Comment Of Post
+- Method: GET
+- Path: [/social-service/comments/1]()
+- Response:
+```json
+{
+  "error": "SUCCESS",
+  "data": [
+    {
+      "commentId": 6,
+      "authorId": 3,
+      "authorName": "Nguyen Van A",
+      "authorAvatar": "",
+      "content": "Haha"
+    },
+    {
+      "commentId": 8,
+      "authorId": 4,
+      "authorName": "Tran Van B",
+      "authorAvatar": "",
+      "content": "Very Good !"
+    }
+  ]
+}
+```
 ---
 
 ### Title
