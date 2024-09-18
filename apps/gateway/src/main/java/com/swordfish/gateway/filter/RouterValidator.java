@@ -22,4 +22,9 @@ public class RouterValidator {
         String[] params = path.split("/");
         return params.length > 2 && params[2].equals("inner");
     }
+
+    public boolean isWebSocket(String path) {
+        String[] params = path.split("/");
+        return params.length > 2 && params[2].equals("websocket");
+    }
 }

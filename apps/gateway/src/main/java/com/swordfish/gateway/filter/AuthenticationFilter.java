@@ -43,6 +43,10 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
             return responseBlock(exchange, path);
         }
 
+        if (routerValidator.isWebSocket(path)) {
+            return chain.filter(exchange);
+        }
+
         if (routerValidator.isSecured(path)) {
             String token = headers.getFirst("Authorization");
 

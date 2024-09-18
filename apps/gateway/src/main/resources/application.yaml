@@ -20,6 +20,8 @@ spring:
           uri: lb://messenger
           predicates:
             - Path=/messenger/**
+          filters:
+            - StripPrefix=1
 
         - id: social-service
           uri: lb://social-service
