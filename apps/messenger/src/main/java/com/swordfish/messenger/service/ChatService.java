@@ -3,7 +3,7 @@ package com.swordfish.messenger.service;
 import com.swordfish.messenger.enums.SessionProperty;
 import com.swordfish.messenger.integration.users.UserManagerFeign;
 import com.swordfish.messenger.integration.users.dto.AccountDto;
-import com.swordfish.messenger.utils.ChatManager;
+import com.swordfish.messenger.utils.SocketManager;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,14 +19,14 @@ public class ChatService {
     private UserManagerFeign userManagerFeign;
 
     @Autowired
-    private ChatManager chatManager;
+    private SocketManager socketManager;
 
     public AccountDto verifyToken(String token) {
         return userManagerFeign.getAccountInfo(token);
     }
 
     public void addSession(long userId, WebSocketSession session) {
-        chatManager.addSession(userId, session);
+        socketManager.addSession(userId, session);
         session.getAttributes().put(SessionProperty.USER_ID, userId);
     }
 
@@ -38,13 +38,13 @@ public class ChatService {
 
         long uId = (long) userId;
 
-        chatManager.removeSession(uId);
+        socketManager.removeSession(uId);
         return uId;
     }
 
     public void send(WebSocketSession session, Object response) {
         try {
-            chatManager.send(session, response);
+            socketManager.send(session, response);
         } catch (IOException ex) {
             log.error("Exception ChatService.send(session)", ex);
         }
@@ -52,7 +52,7 @@ public class ChatService {
 
     public void send(long userId, Object response) {
         try {
-            chatManager.send(userId, response);
+            socketManager.send(userId, response);
         } catch (Exception ex) {
             log.error("Exception ChatServer.send(userId)", ex);
         }

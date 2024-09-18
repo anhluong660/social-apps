@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Component
-public class ChatManager {
+public class SocketManager {
 
     private final Map<Long, WebSocketSession> sessions = new ConcurrentHashMap<>();
 
@@ -20,6 +20,10 @@ public class ChatManager {
 
     public void removeSession(long userId) {
         sessions.remove(userId);
+    }
+
+    public boolean isOnline(long userId) {
+        return sessions.containsKey(userId);
     }
 
     public void send(WebSocketSession session, Object response) throws IOException {

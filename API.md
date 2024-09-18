@@ -101,7 +101,8 @@
         {
             "userId": 1,
             "nickName": "Nguyen Van A",
-            "avatarUrl": ""
+            "avatarUrl": "",
+            "online": true
         }
     ]
 }
