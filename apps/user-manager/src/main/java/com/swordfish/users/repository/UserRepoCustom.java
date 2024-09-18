@@ -1,5 +1,6 @@
 package com.swordfish.users.repository;
 
+import com.swordfish.users.model.UserModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
@@ -17,10 +18,8 @@ public class UserRepoCustom {
         Query query = new Query();
         query.fields().include("userId").exclude("_id");
 
-        record InnerUserId(long userId){}
-
-        return mongoTemplate.find(query, InnerUserId.class, "user").stream()
-                .map(InnerUserId::userId)
+        return mongoTemplate.find(query, UserModel.class, "user").stream()
+                .map(UserModel::getUserId)
                 .toList();
     }
 }

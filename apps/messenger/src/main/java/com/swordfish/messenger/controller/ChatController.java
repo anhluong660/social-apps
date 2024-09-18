@@ -7,6 +7,7 @@ import com.swordfish.messenger.service.ChatService;
 import com.swordfish.utils.common.SwordFishUtils;
 import com.swordfish.utils.dto.ResponseSocketBase;
 import com.swordfish.utils.enums.ErrorCode;
+import com.swordfish.utils.enums.SocketCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -58,7 +59,17 @@ public class ChatController extends TextWebSocketHandler {
                     return;
                 }
 
-                chatService.send(receiverId, new ResponseMessage());
+                String chatBoxId = chatService.handleChatToUser(session, receiverId);
+                long senderId = chatService.getUserIdFromSession(session);
+
+                ResponseMessage response = new ResponseMessage();
+                response.setCode(SocketCode.CHAT_USER);
+                response.setChatBoxId(chatBoxId);
+                response.setSenderId(senderId);
+                response.setMessageType(request.getMessageType());
+                response.setContent(request.getContent());
+
+                chatService.send(receiverId, response);
             }
 
             case CHAT_GROUP -> {
@@ -72,7 +83,7 @@ public class ChatController extends TextWebSocketHandler {
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
-        long userId = chatService.removeSession(session);
-        log.info("Disconnect ok ! UserId = {} | StatusCode = {}", userId, status.getCode());
+        chatService.removeSession(session);
+        log.info("Disconnect ok ! UserId = {} | StatusCode = {}", chatService.getUserIdFromSession(session), status.getCode());
     }
 }
