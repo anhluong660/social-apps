@@ -3,6 +3,7 @@ package com.swordfish.users.service;
 import com.swordfish.users.dto.entities.UserDto;
 import com.swordfish.users.dto.response.ResFriendInfo;
 import com.swordfish.users.dto.response.ResUserInfo;
+import com.swordfish.users.integration.messenger.MessengerFeign;
 import com.swordfish.users.model.UserModel;
 import com.swordfish.users.repository.UserRepoCustom;
 import com.swordfish.users.repository.UserRepository;
@@ -14,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class UserManagerService {
@@ -23,6 +25,9 @@ public class UserManagerService {
 
     @Autowired
     private UserRepoCustom userRepoCustom;
+
+    @Autowired
+    private MessengerFeign messengerFeign;
 
     public ResUserInfo getUserInfo(long userId) {
         UserModel userModel = userRepository.findByUserId(userId);
@@ -119,7 +124,11 @@ public class UserManagerService {
             return Collections.emptyList();
         }
 
-        return getFriendInfoListByUserIds(userModel.getFriends());
+        Map<Long, Boolean> userOnlineList = messengerFeign.getOnlineStatusByUserIdList(userModel.getFriends());
+        List<ResFriendInfo> resList =  getFriendInfoListByUserIds(userModel.getFriends());
+        resList.forEach(res -> res.setOnline(userOnlineList.getOrDefault(res.getUserId(), false)));
+
+        return resList;
     }
 
     public List<ResFriendInfo> getAllInviter(long userId) {

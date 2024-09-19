@@ -8,7 +8,8 @@ Microservice Application & Spring Boot Framework
 - Spring boot 3.2.9
 - Java 17
 - MongoDB
-- Mysql
+- Mysql Database
+- Redis
 
 ---
 ### Service In Apps
@@ -26,3 +27,5 @@ Microservice Application & Spring Boot Framework
 + Authentication with JWT (JSON Web Token)
 + Microservice with Spring Cloud
 + Server discovery support balancing with Eureka Netflix
++ Generate unique user id by redis lock
++ Chat with Websocket

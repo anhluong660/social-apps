@@ -17,15 +17,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -49,7 +46,7 @@ public class PostService {
     public ErrorCode addNewPost(long authorId, String content, String mediaLink) {
         PostModel postModel = new PostModel();
         postModel.setAuthorId(authorId);
-        postModel.setCreateTime(Date.from(Instant.now()));
+        postModel.setCreateTime(SwordFishUtils.nowUTC());
         postModel.setContent(content);
         postModel.setMediaLink(mediaLink);
 
