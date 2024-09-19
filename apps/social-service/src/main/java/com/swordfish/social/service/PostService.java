@@ -95,6 +95,28 @@ public class PostService {
         return resultPage;
     }
 
+    public ResponsePost getPost(long postId) {
+        final PostModel postModel = postMapper.findPostById(postId);
+        final ResponsePost responsePost = new ResponsePost();
+        final UserDto authorInfo = userManagerFeign.getUserInfo(postModel.getAuthorId());
+
+        String createTime = SwordFishUtils.convertToUTCStr(postModel.getCreateTime());
+
+        responsePost.setPostId(postModel.getId());
+        responsePost.setAuthorId(postModel.getAuthorId());
+        responsePost.setAuthorId(authorInfo.getUserId());
+        responsePost.setAuthorName(authorInfo.getNickName());
+        responsePost.setAuthorAvatar(authorInfo.getAvatar());
+        responsePost.setCreateTime(createTime);
+        responsePost.setContent(postModel.getContent());
+        responsePost.setMediaLink(postModel.getMediaLink());
+        responsePost.setIsLiked(postModel.getIsLiked());
+        responsePost.setNumLikes(postModel.getLikeCount());
+        responsePost.setNumComments(postModel.getCommentCount());
+
+        return responsePost;
+    }
+
     public GeneralPageResponse<ResponsePost> getPostList(long userId, int currentPage) {
         final long PAGE_SIZE = 10;
 

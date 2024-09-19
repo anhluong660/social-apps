@@ -41,6 +41,10 @@
         SELECT COUNT(*) FROM Post WHERE id = #{postId}
     </select>
 
+    <select id="findPostById" resultMap="PostModel">
+        SELECT * FROM Post WHERE id = #{postId}
+    </select>
+
     <select id="findPostByAuthorIdList" resultMap="PostModel">
         SELECT
             Post_Likes.*,
