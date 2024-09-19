@@ -12,4 +12,6 @@ public class ResFriendInfo {
     private String nickName;
 
     private String avatarUrl;
+
+    private Boolean online;
 }
