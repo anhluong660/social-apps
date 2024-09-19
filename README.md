@@ -28,4 +28,4 @@ Microservice Application & Spring Boot Framework
 + Microservice with Spring Cloud
 + Server discovery support balancing with Eureka Netflix
 + Generate unique user id by redis lock
-+ Chat with Websocket
++ Chat Friend and Group Chat with Web Socket

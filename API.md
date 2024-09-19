@@ -293,6 +293,62 @@
   ]
 }
 ```
+
+---
+
+### Get Chat Box
+- Method: GET
+- Path: [/messenger/chat-box?chatBoxId=2_1&page=1]()
+- Response:
+```json
+{
+    "error": "SUCCESS",
+    "currentPage": 1,
+    "pageSize": 2,
+    "total": 7,
+    "list": [
+        {
+            "authorId": 1,
+            "type": "TEXT",
+            "content": "Message Content 1",
+            "createTime": "2024-09-19T06:29:15.724+00:00"
+        },
+        {
+            "authorId": 2,
+            "type": "TEXT",
+            "content": "Message Content 2",
+            "createTime": "2024-09-19T06:29:21.467+00:00"
+        }
+    ]
+}
+```
+
+---
+
+### Web Socket Chat
+- Method: WebSocket
+- Path: [ws://localhost:8080/messenger/websocket/chat]()
+- Request:
+```json
+{
+    "code": "CHAT_USER",
+    "chatBoxId": "abc_123",
+    "receiverId": 2,
+    "messageType": "TEXT",
+    "content": "Hello World"
+}
+```
+- Response:
+```json
+{
+    "code": "CHAT_USER",
+    "chatBoxId": "abc_123",
+    "senderId": 3,
+    "messageType": "TEXT",
+    "content": "Hello World"
+}
+```
+
 ---
 
 ### Title
