@@ -1,13 +1,13 @@
 package com.swordfish.messenger.service;
 
 import com.swordfish.messenger.dto.request.RequestMessage;
-import com.swordfish.messenger.enums.SessionProperty;
 import com.swordfish.messenger.integration.users.UserManagerFeign;
 import com.swordfish.messenger.integration.users.dto.AccountDto;
 import com.swordfish.messenger.model.ChatBoxModel;
 import com.swordfish.messenger.model.MessageModel;
 import com.swordfish.messenger.repository.ChatBoxRepository;
 import com.swordfish.messenger.utils.MessengerUtils;
+import com.swordfish.messenger.utils.SessionPropertyUtils;
 import com.swordfish.messenger.utils.SocketManager;
 import com.swordfish.utils.common.SwordFishUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +17,6 @@ import org.springframework.web.socket.WebSocketSession;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Set;
 
 @Slf4j
@@ -42,12 +41,11 @@ public class ChatService {
 
     public void addSession(long userId, WebSocketSession session) {
         socketManager.addSession(userId, session);
-        session.getAttributes().put(SessionProperty.USER_ID, userId);
+        SessionPropertyUtils.of(session).setUserId(userId);
     }
 
     public long getUserIdFromSession(WebSocketSession session) {
-        Object userId = session.getAttributes().get(SessionProperty.USER_ID);
-        return userId == null ? -1 : (long) userId;
+        return SessionPropertyUtils.of(session).getUserId();
     }
 
     public void removeSession(WebSocketSession session) {
@@ -73,13 +71,8 @@ public class ChatService {
         }
     }
 
-    @SuppressWarnings("unchecked")
     public String handleChatToUser(WebSocketSession session, RequestMessage requestMessage) {
-        Set<String> chatBoxSet = (Set<String>) session.getAttributes().get(SessionProperty.CHAT_BOX);
-        if (chatBoxSet == null) {
-            chatBoxSet = new HashSet<>();
-            session.getAttributes().put(SessionProperty.CHAT_BOX, chatBoxSet);
-        }
+        Set<String> chatBoxSet = SessionPropertyUtils.of(session).getChatBoxSet();
 
         long userId = this.getUserIdFromSession(session);
         long receiverId = requestMessage.getReceiverId();
@@ -106,22 +99,6 @@ public class ChatService {
 
         return chatBoxId;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 }

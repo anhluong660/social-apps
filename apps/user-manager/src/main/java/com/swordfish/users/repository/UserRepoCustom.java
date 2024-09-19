@@ -18,7 +18,7 @@ public class UserRepoCustom {
         Query query = new Query();
         query.fields().include("userId").exclude("_id");
 
-        return mongoTemplate.find(query, UserModel.class, "user").stream()
+        return mongoTemplate.find(query, UserModel.class).stream()
                 .map(UserModel::getUserId)
                 .toList();
     }

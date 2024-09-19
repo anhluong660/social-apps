@@ -1,7 +1,9 @@
 package com.swordfish.messenger.utils;
 
 import com.swordfish.utils.common.SwordFishUtils;
+import jakarta.annotation.PreDestroy;
 import org.springframework.stereotype.Component;
+import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
@@ -16,6 +18,10 @@ public class SocketManager {
 
     public void addSession(long userId, WebSocketSession session) {
         sessions.put(userId, session);
+    }
+
+    public WebSocketSession getSession(long userId) {
+        return sessions.get(userId);
     }
 
     public void removeSession(long userId) {
@@ -40,4 +46,10 @@ public class SocketManager {
         send(session, response);
     }
 
+    @PreDestroy
+    private void onShutdown() throws IOException {
+        for (WebSocketSession session : sessions.values()) {
+            session.close(CloseStatus.SERVICE_RESTARTED);
+        }
+    }
 }

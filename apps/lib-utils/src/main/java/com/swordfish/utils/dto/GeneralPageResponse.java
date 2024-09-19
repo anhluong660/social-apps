@@ -30,4 +30,12 @@ public class GeneralPageResponse<T> {
     public static <T> GeneralPageResponse<T> fail() {
         return new GeneralPageResponse<>(ErrorCode.FAIL, 0, 0, 0, Collections.emptyList());
     }
+
+    public static <T> GeneralPageResponse<T> success() {
+        return new GeneralPageResponse<>(ErrorCode.SUCCESS, 0, 0, 0, Collections.emptyList());
+    }
+
+    public static <T> GeneralPageResponse<T> of(ErrorCode error) {
+        return new GeneralPageResponse<>(error, 0, 0, 0, Collections.emptyList());
+    }
 }
