@@ -4,6 +4,7 @@ import com.swordfish.messenger.dto.request.RequestMessage;
 import com.swordfish.messenger.dto.response.ResponseMessage;
 import com.swordfish.messenger.integration.users.dto.AccountDto;
 import com.swordfish.messenger.service.ChatService;
+import com.swordfish.messenger.utils.ValidatorUtils;
 import com.swordfish.utils.common.SwordFishUtils;
 import com.swordfish.utils.dto.ResponseSocketBase;
 import com.swordfish.utils.enums.ErrorCode;
@@ -19,6 +20,9 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 @Slf4j
 @Controller
 public class ChatController extends TextWebSocketHandler {
+
+    @Autowired
+    private ValidatorUtils validatorUtils;
 
     @Autowired
     private ChatService chatService;
@@ -54,13 +58,14 @@ public class ChatController extends TextWebSocketHandler {
         switch (request.getCode()) {
             case CHAT_USER -> {
                 Long receiverId = request.getReceiverId();
-                if (receiverId == null) {
+                long senderId = chatService.getUserIdFromSession(session);
+
+                if (validatorUtils.invalidInputChatUser(senderId, receiverId)) {
                     chatService.send(session, ResponseSocketBase.fail());
                     return;
                 }
 
-                String chatBoxId = chatService.handleChatToUser(session, receiverId);
-                long senderId = chatService.getUserIdFromSession(session);
+                String chatBoxId = chatService.handleChatToUser(session, request);
 
                 ResponseMessage response = new ResponseMessage();
                 response.setCode(SocketCode.CHAT_USER);

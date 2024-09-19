@@ -1,8 +1,6 @@
 package com.swordfish.messenger.model;
 
 import lombok.Data;
-import org.bson.types.ObjectId;
-import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
@@ -11,10 +9,7 @@ import java.util.List;
 @Document("chat_box")
 public class ChatBoxModel {
 
-    @Id
-    private ObjectId id;
-
-    private List<Long> memberList;
+    private String chatBoxId;
 
     private List<MessageModel> messageList;
 }

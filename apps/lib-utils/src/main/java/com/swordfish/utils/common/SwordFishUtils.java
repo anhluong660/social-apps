@@ -73,6 +73,10 @@ public class SwordFishUtils {
         return utcTime.format(DateTimeFormatter.ISO_INSTANT);
     }
 
+    public static Date nowUTC() {
+        return Date.from(Instant.now());
+    }
+
     public static Object createInstance(String path) {
         try {
             Class<?> clazz = Class.forName(path);

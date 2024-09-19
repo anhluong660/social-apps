@@ -1,22 +1,24 @@
 package com.swordfish.messenger.service;
 
+import com.swordfish.messenger.dto.request.RequestMessage;
 import com.swordfish.messenger.enums.SessionProperty;
 import com.swordfish.messenger.integration.users.UserManagerFeign;
 import com.swordfish.messenger.integration.users.dto.AccountDto;
-import com.swordfish.messenger.repository.UserRepoCustom;
+import com.swordfish.messenger.model.ChatBoxModel;
+import com.swordfish.messenger.model.MessageModel;
+import com.swordfish.messenger.repository.ChatBoxRepository;
+import com.swordfish.messenger.utils.MessengerUtils;
 import com.swordfish.messenger.utils.SocketManager;
-import com.swordfish.utils.entities.Pair;
+import com.swordfish.utils.common.SwordFishUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 @Slf4j
 @Service
@@ -29,7 +31,10 @@ public class ChatService {
     private SocketManager socketManager;
 
     @Autowired
-    private UserRepoCustom userRepoCustom;
+    private MessengerUtils messengerUtils;
+
+    @Autowired
+    private ChatBoxRepository chatBoxRepository;
 
     public AccountDto verifyToken(String token) {
         return userManagerFeign.getAccountInfo(token);
@@ -69,37 +74,35 @@ public class ChatService {
     }
 
     @SuppressWarnings("unchecked")
-    private Map<Long, String> loadUserChatBox(long userId, Map<String, Object> sessionProperties) {
-        Map<Long, String> chatBoxMap = (Map<Long, String>) sessionProperties.get(SessionProperty.CHAT_BOX);
-
-        if (chatBoxMap == null) {
-            List<String> chatBoxList = userRepoCustom.getChatBoxListByUserId(userId);
-
-            chatBoxMap = userRepoCustom.getUserIdListByChatBoxList(chatBoxList)
-                    .entrySet().stream()
-                    .map(entry -> {
-                        List<Long> memberList = entry.getValue();
-                        memberList.remove(userId);
-                        return memberList.isEmpty() ? null : new Pair<>(memberList.get(0), entry.getKey());
-                    })
-                    .filter(Objects::nonNull)
-                    .collect(Collectors.toMap(
-                            Pair::getFirst,
-                            Pair::getSecond,
-                            (o, n) -> n,
-                            HashMap::new
-                    ));
+    public String handleChatToUser(WebSocketSession session, RequestMessage requestMessage) {
+        Set<String> chatBoxSet = (Set<String>) session.getAttributes().get(SessionProperty.CHAT_BOX);
+        if (chatBoxSet == null) {
+            chatBoxSet = new HashSet<>();
+            session.getAttributes().put(SessionProperty.CHAT_BOX, chatBoxSet);
         }
 
-        return chatBoxMap;
-    }
-
-    public String handleChatToUser(WebSocketSession session, long receiverId) {
         long userId = this.getUserIdFromSession(session);
-        Map<String, Object> sessionProperties = session.getAttributes();
-        Map<Long, String> chatBoxMap = this.loadUserChatBox(userId, sessionProperties);
+        long receiverId = requestMessage.getReceiverId();
+        String chatBoxId = messengerUtils.createChatBoxId(userId, receiverId);
 
-        String chatBoxId = chatBoxMap.get(receiverId);
+        if (!chatBoxSet.contains(chatBoxId)) {
+            if (!chatBoxRepository.existsByChatBoxId(chatBoxId)) {
+                ChatBoxModel chatBoxModel = new ChatBoxModel();
+                chatBoxModel.setChatBoxId(chatBoxId);
+                chatBoxModel.setMessageList(new ArrayList<>());
+                chatBoxRepository.save(chatBoxModel);
+            }
+
+            chatBoxSet.add(chatBoxId);
+        }
+
+        MessageModel messageModel = new MessageModel();
+        messageModel.setAuthorId(userId);
+        messageModel.setType(requestMessage.getMessageType());
+        messageModel.setContent(requestMessage.getContent());
+        messageModel.setCreateTime(SwordFishUtils.nowUTC());
+
+        chatBoxRepository.findAndPushMessageByChatBoxId(chatBoxId, messageModel);
 
         return chatBoxId;
     }
