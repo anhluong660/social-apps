@@ -1,5 +1,6 @@
 package com.swordfish.users.controller;
 
+import com.swordfish.users.dto.entities.UserDto;
 import com.swordfish.users.dto.response.ResFriendInfo;
 import com.swordfish.users.dto.response.ResUserInfo;
 import com.swordfish.users.service.UserManagerService;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -30,6 +32,16 @@ public class UserManagerController {
         }
 
         return GeneralResponse.success(resUserInfo);
+    }
+
+    @GetMapping("/user-info-list")
+    public GeneralResponse<List<UserDto>> getUserInfoList(@RequestBody List<Long> userIds) {
+        if (userIds == null || userIds.isEmpty()) {
+            return GeneralResponse.of(ErrorCode.PARAMS_INVALID);
+        }
+
+        List<UserDto> userDtoList = userManagerService.getUserDtoInfoList(userIds);
+        return GeneralResponse.success(userDtoList);
     }
 
     @PostMapping("/add-friend/{friendId}")

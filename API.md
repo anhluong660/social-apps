@@ -50,7 +50,7 @@
 ---
 
 ### Get User Info
-- Method: POST
+- Method: GET
 - Path: [/user-manager/user-info]()
 - Response:
 ```json
@@ -59,6 +59,34 @@
   "avatar": "",
   "dateOfBirth": "1999-09-07T00:00:00Z",
   "sex": "Male"
+}
+```
+
+---
+
+### Get User Info List
+- Method: POST
+- Path: [/user-manager/user-info-list]()
+- Request:
+```json
+  [1, 2]
+```
+- Response:
+```json
+{
+  "error": "SUCCESS",
+  "data": [
+    {
+      "userId": 1,
+      "nickName": "Nguyen Van A",
+      "avatar": ""
+    },
+    {
+      "userId": 2,
+      "nickName": "Tran Van B",
+      "avatar": ""
+    }
+  ]
 }
 ```
 
