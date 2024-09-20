@@ -1,6 +1,5 @@
 package com.swordfish.users.controller;
 
-import com.swordfish.users.dto.entities.UserDto;
 import com.swordfish.users.dto.response.ResFriendInfo;
 import com.swordfish.users.dto.response.ResUserInfo;
 import com.swordfish.users.service.UserManagerService;
@@ -35,13 +34,13 @@ public class UserManagerController {
     }
 
     @GetMapping("/user-info-list")
-    public GeneralResponse<List<UserDto>> getUserInfoList(@RequestBody List<Long> userIds) {
+    public GeneralResponse<List<ResUserInfo>> getUserInfoList(@RequestBody List<Long> userIds) {
         if (userIds == null || userIds.isEmpty()) {
             return GeneralResponse.of(ErrorCode.PARAMS_INVALID);
         }
 
-        List<UserDto> userDtoList = userManagerService.getUserDtoInfoList(userIds);
-        return GeneralResponse.success(userDtoList);
+        List<ResUserInfo> resUserInfoList = userManagerService.getUserInfoList(userIds);
+        return GeneralResponse.success(resUserInfoList);
     }
 
     @PostMapping("/add-friend/{friendId}")

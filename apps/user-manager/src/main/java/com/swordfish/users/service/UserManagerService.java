@@ -39,11 +39,28 @@ public class UserManagerService {
                 .toInstant().toString();
 
         ResUserInfo resUserInfo = new ResUserInfo();
+        resUserInfo.setUserId(userModel.getUserId());
         resUserInfo.setNickName(userModel.getNickName());
         resUserInfo.setAvatar(userModel.getAvatarUrl());
         resUserInfo.setDateOfBirth(dateOfBirth);
         resUserInfo.setSex(userModel.getSex());
         return resUserInfo;
+    }
+
+    public List<ResUserInfo> getUserInfoList(List<Long> userIds) {
+        return userRepository.findAllByUserIds(userIds).stream()
+                .map(userModel -> {
+                    String dateOfBirth = userModel.getDateOfBirth()
+                            .toInstant().toString();
+
+                    ResUserInfo resUserInfo = new ResUserInfo();
+                    resUserInfo.setUserId(userModel.getUserId());
+                    resUserInfo.setNickName(userModel.getNickName());
+                    resUserInfo.setAvatar(userModel.getAvatarUrl());
+                    resUserInfo.setDateOfBirth(dateOfBirth);
+                    resUserInfo.setSex(userModel.getSex());
+                    return resUserInfo;
+                }).toList();
     }
 
     public UserDto getUserDtoInfo(long userId) {

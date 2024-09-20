@@ -55,6 +55,7 @@
 - Response:
 ```json
 {
+  "userId": 1,
   "nickName": "Nguyen Van A",
   "avatar": "",
   "dateOfBirth": "1999-09-07T00:00:00Z",
@@ -79,12 +80,16 @@
     {
       "userId": 1,
       "nickName": "Nguyen Van A",
-      "avatar": ""
+      "avatar": "",
+      "dateOfBirth": "1999-01-01T00:00:00Z",
+      "sex": "Male"
     },
     {
       "userId": 2,
       "nickName": "Tran Van B",
-      "avatar": ""
+      "avatar": "",
+      "dateOfBirth": "1999-01-01T00:00:00Z",
+      "sex": "Male"
     }
   ]
 }
