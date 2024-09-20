@@ -15,4 +15,6 @@ public interface PostMapper {
     List<PostModel> findPostByAuthorIdList(List<Long> authorIdList, Long userId);
 
     int existPost(Long postId);
+
+    PostModel findPostById(Long postId);
 }

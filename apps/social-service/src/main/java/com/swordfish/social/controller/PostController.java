@@ -52,6 +52,16 @@ public class PostController {
         return postService.getPostList(userId, page);
     }
 
+    @GetMapping("/post/{postId}")
+    public GeneralResponse<ResponsePost> getPost(@PathVariable Long postId) {
+        if (!postService.existPost(postId)) {
+            return GeneralResponse.of(ErrorCode.NOT_FOUND);
+        }
+
+        ResponsePost responsePost = postService.getPost(postId);
+        return GeneralResponse.success(responsePost);
+    }
+
     @PostMapping("/like-post")
     public GeneralResponse<ResponseLikePost> likePost(@Valid @RequestBody RequestLikePost request) {
         if (!postService.existPost(request.getPostId())) {

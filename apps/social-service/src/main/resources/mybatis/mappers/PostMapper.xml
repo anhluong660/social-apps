@@ -41,6 +41,25 @@
         SELECT COUNT(*) FROM Post WHERE id = #{postId}
     </select>
 
+    <select id="findPostById" resultMap="PostModel">
+        SELECT
+            Post_Likes.*,
+            COUNT(comments.Id) AS CommentCount
+        FROM (
+            SELECT
+                post.*,
+                COUNT(likes.Id) AS LikeCount,
+                (CASE WHEN SUM(likes.UserId = post.AuthorId) > 0 THEN 1 ELSE 0 END) AS IsLiked
+            FROM
+                post
+            LEFT JOIN likes ON post.Id = likes.PostId
+            WHERE post.Id = #{postId}
+            GROUP BY post.Id
+        ) AS Post_Likes
+        LEFT JOIN comments ON Post_Likes.Id = comments.PostId
+        GROUP BY Post_Likes.Id
+    </select>
+
     <select id="findPostByAuthorIdList" resultMap="PostModel">
         SELECT
             Post_Likes.*,
