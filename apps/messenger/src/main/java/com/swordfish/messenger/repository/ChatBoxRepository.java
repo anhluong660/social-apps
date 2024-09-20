@@ -3,7 +3,6 @@ package com.swordfish.messenger.repository;
 import com.swordfish.messenger.model.ChatBoxModel;
 import com.swordfish.messenger.model.MessageModel;
 import com.swordfish.messenger.repository.mongo.ChatBoxMongo;
-import com.swordfish.utils.entities.Pair;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;

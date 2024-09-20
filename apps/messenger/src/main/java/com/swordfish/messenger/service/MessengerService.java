@@ -1,8 +1,11 @@
 package com.swordfish.messenger.service;
 
 import com.swordfish.messenger.dto.entities.MessageDto;
+import com.swordfish.messenger.dto.response.ResGroupChat;
+import com.swordfish.messenger.model.GroupChatModel;
 import com.swordfish.messenger.model.MessageModel;
 import com.swordfish.messenger.repository.ChatBoxRepository;
+import com.swordfish.messenger.repository.GroupChatRepository;
 import com.swordfish.messenger.utils.SessionPropertyUtils;
 import com.swordfish.messenger.utils.SocketManager;
 import com.swordfish.utils.common.RequestContextUtil;
@@ -13,10 +16,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.WebSocketSession;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,6 +32,9 @@ public class MessengerService {
 
     @Autowired
     private ChatBoxRepository chatBoxRepository;
+
+    @Autowired
+    private GroupChatRepository groupChatRepository;
 
     public Map<Long, Boolean> getOnlineStatusByUserIdList(List<Long> userIdList) {
         return userIdList.stream()
@@ -85,4 +93,32 @@ public class MessengerService {
 
         return response;
     }
+
+    public String createGroupChat(String groupName, Set<Long> memberIdList) {
+        List<Long> memberList = new ArrayList<>(memberIdList);
+        memberList.add(RequestContextUtil.getUserId());
+
+        String groupChatId = UUID.randomUUID().toString();
+
+        GroupChatModel groupChatModel = new GroupChatModel();
+        groupChatModel.setGroupChatId(groupChatId);
+        groupChatModel.setName(groupName);
+        groupChatModel.setMemberList(memberList);
+        groupChatModel.setMessageList(new ArrayList<>());
+
+        groupChatRepository.save(groupChatModel);
+        return groupChatId;
+    }
+
+    public List<ResGroupChat> getGroupChatList() {
+        long userId = RequestContextUtil.getUserId();
+        return groupChatRepository.findGroupListByMemberId(userId).stream()
+                .map(model -> {
+                    ResGroupChat response = new ResGroupChat();
+                    BeanUtils.copyProperties(model, response);
+                    return response;
+                })
+                .toList();
+    }
+
 }

@@ -9,7 +9,7 @@ import java.util.Arrays;
 public class MessengerUtils {
 
     public String createChatBoxId(long memberId1, long memberId2) {
-        return memberId1 > memberId2 ? memberId1 + "_" + memberId2 : memberId2 + "_" + memberId1;
+        return memberId1 > memberId2 ? memberId1 + "-" + memberId2 : memberId2 + "-" + memberId1;
     }
 
     public boolean checkValidChatBoxId(String chatBoxId) {
@@ -17,7 +17,7 @@ public class MessengerUtils {
             return false;
         }
 
-        String[] arr = chatBoxId.split("_");
+        String[] arr = chatBoxId.split("-");
         if (arr.length != 2) {
             return false;
         }
