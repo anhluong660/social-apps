@@ -40,9 +40,8 @@ public class PostController {
         return GeneralResponse.of(error);
     }
 
-    @GetMapping("/my-post-list")
-    public GeneralPageResponse<ResponsePost> getMyPostList() {
-        long userId = RequestContextUtil.getUserId();
+    @GetMapping("/my-post-list/{userId}")
+    public GeneralPageResponse<ResponsePost> getMyPostList(@PathVariable Long userId) {
         return postService.getMyPostList(userId);
     }
 
