@@ -33,6 +33,16 @@ public class UserManagerController {
         return GeneralResponse.success(resUserInfo);
     }
 
+    @GetMapping("/user-info/{userId}")
+    public GeneralResponse<ResUserInfo> getUserInfoById(@PathVariable Long userId) {
+        ResUserInfo resUserInfo = userManagerService.getUserInfo(userId);
+        if (resUserInfo == null) {
+            return GeneralResponse.of(ErrorCode.USER_INFO_NULL);
+        }
+
+        return GeneralResponse.success(resUserInfo);
+    }
+
     @GetMapping("/user-info-list")
     public GeneralResponse<List<ResUserInfo>> getUserInfoList(@RequestBody List<Long> userIds) {
         if (userIds == null || userIds.isEmpty()) {
