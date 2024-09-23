@@ -8,6 +8,8 @@ import org.springframework.data.mongodb.repository.Update;
 
 public interface GroupChatMongo extends MongoRepository<GroupChatModel, ObjectId> {
 
+    boolean existsByGroupChatId(String groupChatId);
+
     @Update("{ $push: { 'messageList': ?1}}")
     void findAndPushMessageByGroupChatId(String groupChatId, MessageModel messageModel);
 }

@@ -2,6 +2,7 @@ package com.swordfish.messenger.controller;
 
 import com.swordfish.messenger.dto.entities.MessageDto;
 import com.swordfish.messenger.dto.request.ReqCreateGroupChat;
+import com.swordfish.messenger.dto.response.ResChatBox;
 import com.swordfish.messenger.dto.response.ResCreateGroupChat;
 import com.swordfish.messenger.dto.response.ResGroupChat;
 import com.swordfish.messenger.service.MessengerService;
@@ -34,9 +35,15 @@ public class MessengerController {
     @Autowired
     private MessengerService messengerService;
 
+    @GetMapping("/chat-box-list")
+    public GeneralListResponse<ResChatBox> getChatBoxList() {
+        List<ResChatBox> resChatBoxList = messengerService.getChatBoxList();
+        return GeneralListResponse.success(resChatBoxList);
+    }
+
     @GetMapping("/chat-box")
     public GeneralPageResponse<MessageDto> getMessageChatBox(@RequestParam String chatBoxId, @RequestParam Integer page) {
-        if (page == null || page <= 0 || !messengerUtils.checkValidChatBoxId(chatBoxId)) {
+        if (validatorUtils.invalidPage(page) || !messengerUtils.checkValidChatBoxId(chatBoxId)) {
             return GeneralPageResponse.of(ErrorCode.PARAMS_INVALID);
         }
 
@@ -46,11 +53,6 @@ public class MessengerController {
 
         return messengerService.getMessageChatBox(chatBoxId, page);
     }
-
-//    @GetMapping
-//    public GeneralPageResponse<MessageDto> getGroupChat(@RequestParam String groupChatId, @RequestParam Integer page) {
-//
-//    }
 
     @PostMapping("/new-group-chat")
     public GeneralResponse<ResCreateGroupChat> createGroupChat(@Valid @RequestBody ReqCreateGroupChat request) {
@@ -72,5 +74,18 @@ public class MessengerController {
     public GeneralListResponse<ResGroupChat> getGroupChatList() {
         List<ResGroupChat> resGroupChatList = messengerService.getGroupChatList();
         return GeneralListResponse.success(resGroupChatList);
+    }
+
+    @GetMapping("/group-chat")
+    public GeneralPageResponse<MessageDto> getMessageGroupChat(@RequestParam String groupChatId, @RequestParam Integer page) {
+        if (validatorUtils.invalidPage(page) || groupChatId == null) {
+            return GeneralPageResponse.of(ErrorCode.PARAMS_INVALID);
+        }
+
+        if (!messengerService.existGroupChat(groupChatId)) {
+            return GeneralPageResponse.of(ErrorCode.NOT_FOUND);
+        }
+
+        return messengerService.getMessageGroupChat(groupChatId, page);
     }
 }

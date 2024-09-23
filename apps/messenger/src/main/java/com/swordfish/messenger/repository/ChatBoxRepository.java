@@ -1,6 +1,7 @@
 package com.swordfish.messenger.repository;
 
 import com.swordfish.messenger.model.ChatBoxModel;
+import com.swordfish.messenger.model.GroupChatModel;
 import com.swordfish.messenger.model.MessageModel;
 import com.swordfish.messenger.repository.mongo.ChatBoxMongo;
 import lombok.extern.slf4j.Slf4j;
@@ -39,6 +40,10 @@ public class ChatBoxRepository {
         return chatBoxMongo.save(chatBoxModel);
     }
 
+    public List<ChatBoxModel> findChatBoxByMemberId(long memberId) {
+        return chatBoxMongo.findChatBoxByMemberId(String.valueOf(memberId));
+    }
+
     public int countMessage(String chatBoxId) {
         Aggregation aggregation = newAggregation(
             match(Criteria.where("chatBoxId").is(chatBoxId)),
@@ -47,7 +52,7 @@ public class ChatBoxRepository {
 
         record MessageCounter(int messageCount){}
 
-        AggregationResults<MessageCounter> results = mongoTemplate.aggregate(aggregation, "chat_box", MessageCounter.class);
+        AggregationResults<MessageCounter> results = mongoTemplate.aggregate(aggregation, ChatBoxModel.class, MessageCounter.class);
 
         MessageCounter messageCounter = results.getUniqueMappedResult();
         return messageCounter != null ? messageCounter.messageCount() : 0;

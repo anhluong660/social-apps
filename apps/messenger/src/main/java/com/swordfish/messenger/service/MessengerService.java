@@ -1,16 +1,20 @@
 package com.swordfish.messenger.service;
 
 import com.swordfish.messenger.dto.entities.MessageDto;
+import com.swordfish.messenger.dto.response.ResChatBox;
 import com.swordfish.messenger.dto.response.ResGroupChat;
 import com.swordfish.messenger.model.GroupChatModel;
 import com.swordfish.messenger.model.MessageModel;
 import com.swordfish.messenger.repository.ChatBoxRepository;
 import com.swordfish.messenger.repository.GroupChatRepository;
+import com.swordfish.messenger.utils.MessengerUtils;
 import com.swordfish.messenger.utils.SessionPropertyUtils;
 import com.swordfish.messenger.utils.SocketManager;
 import com.swordfish.utils.common.RequestContextUtil;
 import com.swordfish.utils.dto.GeneralPageResponse;
 import com.swordfish.utils.enums.ErrorCode;
+import com.swordfish.utils.enums.RedisKey;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,6 +40,12 @@ public class MessengerService {
     @Autowired
     private GroupChatRepository groupChatRepository;
 
+    @Autowired
+    private RedissonClient redissonClient;
+
+    @Autowired
+    private MessengerUtils messengerUtils;
+
     public Map<Long, Boolean> getOnlineStatusByUserIdList(List<Long> userIdList) {
         return userIdList.stream()
                 .collect(Collectors.toMap(
@@ -44,6 +54,19 @@ public class MessengerService {
                         (oldValue, newValue) -> oldValue,
                         HashMap::new
                 ));
+    }
+
+    public List<ResChatBox> getChatBoxList() {
+        long userId = RequestContextUtil.getUserId();
+        return chatBoxRepository.findChatBoxByMemberId(userId).stream()
+                .map(model -> {
+                    ResChatBox response = new ResChatBox();
+                    response.setChatBoxId(model.getChatBoxId());
+                    response.setReceiverId(messengerUtils.getFriendByChatBoxId(model.getChatBoxId()));
+                    return response;
+                })
+                .filter(res -> res.getReceiverId() != null)
+                .toList();
     }
 
     public boolean existsChatBox(String chatBoxId) {
@@ -68,7 +91,7 @@ public class MessengerService {
     }
 
     public GeneralPageResponse<MessageDto> getMessageChatBox(String chatBoxId, int page) {
-        final int PAGE_SIZE = 3;
+        final int PAGE_SIZE = 20;
 
         int totalMessage = chatBoxRepository.countMessage(chatBoxId);
 
@@ -119,6 +142,43 @@ public class MessengerService {
                     return response;
                 })
                 .toList();
+    }
+
+    public boolean existGroupChat(String groupChatId) {
+        final String GROUP_CHAT_KEY = String.format(RedisKey.GROUP_CHAT, groupChatId);
+
+        if (redissonClient.getBucket(GROUP_CHAT_KEY).isExists()) {
+            return true;
+        }
+
+        return groupChatRepository.existsByGroupChatId(groupChatId);
+    }
+
+    public GeneralPageResponse<MessageDto> getMessageGroupChat(String groupChatId, int page) {
+        final int PAGE_SIZE = 20;
+
+        int totalMessage = groupChatRepository.countMessage(groupChatId);
+
+        int offset = Math.max(totalMessage - PAGE_SIZE * page, 0);
+        int size = Math.max(Math.min(PAGE_SIZE, totalMessage - PAGE_SIZE * (page - 1)), 0);
+
+        List<MessageModel> messageModelList = groupChatRepository.getMessageList(groupChatId, offset, size);
+
+        List<MessageDto> messageList = messageModelList.stream()
+                .map(model -> {
+                    MessageDto messageDto = new MessageDto();
+                    BeanUtils.copyProperties(model, messageDto);
+                    return messageDto;
+                }).toList();
+
+        GeneralPageResponse<MessageDto> response = new GeneralPageResponse<>();
+        response.setError(ErrorCode.SUCCESS);
+        response.setCurrentPage(page);
+        response.setPageSize(messageList.size());
+        response.setTotal(totalMessage);
+        response.setList(messageList);
+
+        return response;
     }
 
 }

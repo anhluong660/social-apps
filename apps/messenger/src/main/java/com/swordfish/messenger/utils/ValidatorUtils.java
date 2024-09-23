@@ -46,4 +46,8 @@ public class ValidatorUtils {
 
         return ErrorCode.SUCCESS;
     }
+
+    public boolean invalidPage(Integer page) {
+        return page == null || page <= 0;
+    }
 }

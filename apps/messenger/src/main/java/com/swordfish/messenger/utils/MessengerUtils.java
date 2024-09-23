@@ -26,4 +26,18 @@ public class MessengerUtils {
 
         return Arrays.stream(arr).anyMatch(uId -> Long.parseLong(uId) == userId);
     }
+
+    public Long getFriendByChatBoxId(String chatBoxId) {
+        String[] arr = chatBoxId.split("-");
+        if (arr.length != 2) {
+            return null;
+        }
+
+        final long userId = RequestContextUtil.getUserId();
+
+        return Arrays.stream(arr)
+                .map(Long::parseLong)
+                .filter(uId -> uId != userId)
+                .findFirst().orElse(null);
+    }
 }
