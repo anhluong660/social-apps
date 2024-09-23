@@ -209,7 +209,7 @@
 
 ### Get My Post List
 - Method: GET
-- Path: [/social-service/my-post-list]()
+- Path: [/social-service/my-post-list/{userId}]()
 - Response:
 ```json
 {

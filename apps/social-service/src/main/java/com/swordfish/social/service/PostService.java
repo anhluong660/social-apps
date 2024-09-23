@@ -59,13 +59,13 @@ public class PostService {
         }
     }
 
-    public GeneralPageResponse<ResponsePost> getMyPostList(long authorId) {
-        final UserDto authorInfo = userManagerFeign.getUserInfo(authorId);
+    public GeneralPageResponse<ResponsePost> getMyPostList(long userId) {
+        final UserDto authorInfo = userManagerFeign.getUserInfo(userId);
         if (authorInfo == null) {
             return GeneralPageResponse.fail();
         }
 
-        List<ResponsePost> postList = postMapper.findPostByAuthorId(authorId)
+        List<ResponsePost> postList = postMapper.findPostByUserId(userId)
                 .stream()
                 .map(post -> {
                     String createTime = SwordFishUtils.convertToUTCStr(post.getCreateTime());
@@ -122,7 +122,7 @@ public class PostService {
 
         List<Long> allUserIdList = userManagerFeign.getAllUserIdList();
 
-        List<PostModel> postModelList = postMapper.findPostByAuthorIdList(allUserIdList, userId);
+        List<PostModel> postModelList = postMapper.findPostByUserIdList(allUserIdList, userId);
 
         List<PostModel> postModelOrderList = postModelList.stream()
                 .sorted((a, b) -> Integer.compare(
