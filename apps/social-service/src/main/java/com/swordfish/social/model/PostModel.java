@@ -1,5 +1,6 @@
 package com.swordfish.social.model;
 
+import com.swordfish.social.enums.PostType;
 import lombok.Data;
 
 import java.util.Date;
@@ -12,6 +13,8 @@ public class PostModel {
     private Long authorId;
 
     private Date createTime;
+
+    private PostType postType;
 
     private String content;
 

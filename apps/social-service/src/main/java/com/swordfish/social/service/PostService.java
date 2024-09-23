@@ -2,6 +2,7 @@ package com.swordfish.social.service;
 
 import com.swordfish.social.dto.response.ResponseComment;
 import com.swordfish.social.dto.response.ResponsePost;
+import com.swordfish.social.enums.PostType;
 import com.swordfish.social.integration.users.UserManagerFeign;
 import com.swordfish.social.integration.users.dto.UserDto;
 import com.swordfish.social.model.CommentModel;
@@ -10,6 +11,7 @@ import com.swordfish.social.repository.CommentMapper;
 import com.swordfish.social.repository.LikeMapper;
 import com.swordfish.social.repository.PostMapper;
 import com.swordfish.social.utils.SocialUtils;
+import com.swordfish.utils.common.RequestContextUtil;
 import com.swordfish.utils.common.SwordFishUtils;
 import com.swordfish.utils.dto.GeneralPageResponse;
 import com.swordfish.utils.enums.ErrorCode;
@@ -47,6 +49,7 @@ public class PostService {
         PostModel postModel = new PostModel();
         postModel.setAuthorId(authorId);
         postModel.setCreateTime(SwordFishUtils.nowUTC());
+        postModel.setPostType(PostType.of(mediaLink));
         postModel.setContent(content);
         postModel.setMediaLink(mediaLink);
 
@@ -59,13 +62,13 @@ public class PostService {
         }
     }
 
-    public GeneralPageResponse<ResponsePost> getMyPostList(long authorId) {
-        final UserDto authorInfo = userManagerFeign.getUserInfo(authorId);
+    public GeneralPageResponse<ResponsePost> getMyPostList(long userId) {
+        final UserDto authorInfo = userManagerFeign.getUserInfo(userId);
         if (authorInfo == null) {
             return GeneralPageResponse.fail();
         }
 
-        List<ResponsePost> postList = postMapper.findPostByAuthorId(authorId)
+        List<ResponsePost> postList = postMapper.findPostByAuthorId(userId)
                 .stream()
                 .map(post -> {
                     String createTime = SwordFishUtils.convertToUTCStr(post.getCreateTime());
@@ -75,6 +78,7 @@ public class PostService {
                     res.setAuthorName(authorInfo.getNickName());
                     res.setAuthorAvatar(authorInfo.getAvatar());
                     res.setCreateTime(createTime);
+                    res.setPostType(post.getPostType());
                     res.setContent(post.getContent());
                     res.setMediaLink(post.getMediaLink());
                     res.setIsLiked(post.getIsLiked());
@@ -93,7 +97,8 @@ public class PostService {
     }
 
     public ResponsePost getPost(long postId) {
-        final PostModel postModel = postMapper.findPostById(postId);
+        final Long userId = RequestContextUtil.getUserId();
+        final PostModel postModel = postMapper.findPostById(postId, userId);
         final ResponsePost responsePost = new ResponsePost();
         final UserDto authorInfo = userManagerFeign.getUserInfo(postModel.getAuthorId());
 
@@ -105,6 +110,7 @@ public class PostService {
         responsePost.setAuthorName(authorInfo.getNickName());
         responsePost.setAuthorAvatar(authorInfo.getAvatar());
         responsePost.setCreateTime(createTime);
+        responsePost.setPostType(postModel.getPostType());
         responsePost.setContent(postModel.getContent());
         responsePost.setMediaLink(postModel.getMediaLink());
         responsePost.setIsLiked(postModel.getIsLiked());
@@ -114,15 +120,15 @@ public class PostService {
         return responsePost;
     }
 
-    public GeneralPageResponse<ResponsePost> getPostList(long userId, int currentPage) {
-        final long PAGE_SIZE = 10;
+    public GeneralPageResponse<ResponsePost> getPostList(long userId, String postType, int currentPage) {
+        final long PAGE_SIZE = 4;
 
         final Set<Long> friendIds = new HashSet<>(userManagerFeign.getFriendIdList(userId));
         friendIds.add(userId);
 
         List<Long> allUserIdList = userManagerFeign.getAllUserIdList();
 
-        List<PostModel> postModelList = postMapper.findPostByAuthorIdList(allUserIdList, userId);
+        List<PostModel> postModelList = postMapper.findPostByAuthorIdList(allUserIdList, userId, postType);
 
         List<PostModel> postModelOrderList = postModelList.stream()
                 .sorted((a, b) -> Integer.compare(
@@ -158,6 +164,7 @@ public class PostService {
                     res.setAuthorName(authorInfo.getNickName());
                     res.setAuthorAvatar(authorInfo.getAvatar());
                     res.setCreateTime(createTime);
+                    res.setPostType(post.getPostType());
                     res.setContent(post.getContent());
                     res.setMediaLink(post.getMediaLink());
                     res.setIsLiked(post.getIsLiked());

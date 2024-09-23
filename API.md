@@ -55,6 +55,7 @@
 - Response:
 ```json
 {
+  "userId": 1,
   "nickName": "Nguyen Van A",
   "avatar": "",
   "dateOfBirth": "1999-09-07T00:00:00Z",
@@ -79,12 +80,16 @@
     {
       "userId": 1,
       "nickName": "Nguyen Van A",
-      "avatar": ""
+      "avatar": "",
+      "dateOfBirth": "1999-01-01T00:00:00Z",
+      "sex": "Male"
     },
     {
       "userId": 2,
       "nickName": "Tran Van B",
-      "avatar": ""
+      "avatar": "",
+      "dateOfBirth": "1999-01-01T00:00:00Z",
+      "sex": "Male"
     }
   ]
 }
@@ -204,7 +209,7 @@
 
 ### Get My Post List
 - Method: GET
-- Path: [/social-service/my-post-list]()
+- Path: [/social-service/my-post-list/{userId}]()
 - Response:
 ```json
 {
@@ -219,6 +224,7 @@
             "authorName": "Nguyen Van A",
             "authorAvatar": "avatar.png",
             "createTime": "2024-09-11T04:19:05Z",
+            "postType": "IMAGE",
             "content": "This is my post",
             "mediaLink": "http://image.jpg",
             "numLikes": 100,
@@ -231,7 +237,7 @@
 
 ### Get Post List
 - Method: GET
-- Path: [/social-service/post-list?page=1]()
+- Path: [/social-service/post-list?type=IMAGE&page=1]()
 - Response:
 ```json
 {
@@ -246,6 +252,7 @@
             "authorName": "Nguyen Van A",
             "authorAvatar": "avatar.png",
             "createTime": "2024-09-11T04:19:05Z",
+            "postType": "IMAGE",
             "content": "This is my post",
             "mediaLink": "http://image.jpg",
             "numLikes": 100,
