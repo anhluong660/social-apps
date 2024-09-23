@@ -1,14 +1,17 @@
 package com.swordfish.messenger.controller;
 
-import com.swordfish.messenger.dto.request.RequestMessage;
-import com.swordfish.messenger.dto.response.ResponseMessage;
+import com.swordfish.messenger.dto.request.ReqChatBoxMessage;
+import com.swordfish.messenger.dto.request.ReqGroupChatMessage;
+import com.swordfish.messenger.dto.response.ResChatBoxMessage;
+import com.swordfish.messenger.dto.response.ResGroupChatMessage;
+import com.swordfish.messenger.enums.MessageType;
 import com.swordfish.messenger.integration.users.dto.AccountDto;
 import com.swordfish.messenger.service.ChatService;
 import com.swordfish.messenger.utils.ValidatorUtils;
 import com.swordfish.utils.common.JsonUtils;
-import com.swordfish.utils.dto.ResponseSocketBase;
+import com.swordfish.utils.dto.RequestMessage;
+import com.swordfish.utils.dto.ResponseMessage;
 import com.swordfish.utils.enums.ErrorCode;
-import com.swordfish.utils.enums.SocketCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -50,28 +53,29 @@ public class ChatController extends TextWebSocketHandler {
 
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
-        RequestMessage request = JsonUtils.fromJson(message.getPayload(), RequestMessage.class);
+        RequestMessage requestMessage = JsonUtils.fromJson(message.getPayload(), RequestMessage.class);
 
-        if (request.getCode() == null || request.getMessageType() == null || request.getContent() == null) {
-            chatService.send(session, ResponseSocketBase.fail());
+        if (requestMessage.getCode() == null) {
+            chatService.send(session, ResponseMessage.fail());
             return;
         }
 
-        switch (request.getCode()) {
+        switch (requestMessage.getCode()) {
             case CHAT_USER -> {
+                ReqChatBoxMessage request = JsonUtils.fromJson(message.getPayload(), ReqChatBoxMessage.class);
                 Long receiverId = request.getReceiverId();
                 long senderId = chatService.getUserIdFromSession(session);
+                MessageType messageType = request.getMessageType();
+                String content = request.getContent();
 
-                if (validatorUtils.invalidInputChatUser(senderId, receiverId)) {
-                    chatService.send(session, ResponseSocketBase.of(ErrorCode.PARAMS_INVALID));
+                if (validatorUtils.invalidInputChatUser(senderId, receiverId, messageType, content)) {
+                    chatService.send(session, ResponseMessage.of(ErrorCode.PARAMS_INVALID));
                     return;
                 }
 
-                String chatBoxId = chatService.handleChatToUser(session, request);
+                chatService.handleChatToUser(session, request);
 
-                ResponseMessage response = new ResponseMessage();
-                response.setCode(SocketCode.CHAT_USER);
-                response.setChatBoxId(chatBoxId);
+                ResChatBoxMessage response = new ResChatBoxMessage();
                 response.setSenderId(senderId);
                 response.setMessageType(request.getMessageType());
                 response.setContent(request.getContent());
@@ -80,8 +84,13 @@ public class ChatController extends TextWebSocketHandler {
             }
 
             case CHAT_GROUP -> {
-                if (request.getChatBoxId() == null) {
-                    chatService.send(session, ResponseSocketBase.of(ErrorCode.PARAMS_INVALID));
+                ReqGroupChatMessage request = JsonUtils.fromJson(message.getPayload(), ReqGroupChatMessage.class);
+                String groupChatId = request.getGroupChatId();
+                MessageType messageType = request.getMessageType();
+                String content = request.getContent();
+
+                if (validatorUtils.invalidInputGroupChat(groupChatId, messageType, content)) {
+                    chatService.send(session, ResponseMessage.of(ErrorCode.PARAMS_INVALID));
                     return;
                 }
 
@@ -90,16 +99,15 @@ public class ChatController extends TextWebSocketHandler {
                 List<Long> memberIds = chatService.handleGroupChat(senderId, request);
 
                 if (memberIds.isEmpty()) {
-                    chatService.send(session, ResponseSocketBase.of(ErrorCode.NOT_FOUND));
+                    chatService.send(session, ResponseMessage.of(ErrorCode.NOT_FOUND));
                     return;
                 }
 
-                ResponseMessage response = new ResponseMessage();
-                response.setCode(SocketCode.CHAT_GROUP);
-                response.setChatBoxId(request.getChatBoxId());
+                ResGroupChatMessage response = new ResGroupChatMessage();
+                response.setGroupChatId(groupChatId);
                 response.setSenderId(senderId);
-                response.setMessageType(request.getMessageType());
-                response.setContent(request.getContent());
+                response.setMessageType(messageType);
+                response.setContent(content);
 
                 chatService.send(memberIds.stream()
                         .filter(memberId -> memberId != senderId)

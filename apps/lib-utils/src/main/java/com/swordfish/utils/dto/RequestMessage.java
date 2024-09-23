@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class RequestSocketBase {
+public class RequestMessage {
 
     private SocketCode code;
 

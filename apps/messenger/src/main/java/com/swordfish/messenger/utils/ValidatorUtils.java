@@ -1,5 +1,6 @@
 package com.swordfish.messenger.utils;
 
+import com.swordfish.messenger.enums.MessageType;
 import com.swordfish.messenger.integration.users.UserManagerFeign;
 import com.swordfish.utils.common.RequestContextUtil;
 import com.swordfish.utils.enums.ErrorCode;
@@ -15,12 +16,16 @@ public class ValidatorUtils {
     @Autowired
     private UserManagerFeign userManagerFeign;
 
-    public boolean invalidInputChatUser(long sendId, Long receiverId) {
-        if (receiverId == null) {
+    public boolean invalidInputChatUser(long sendId, Long receiverId, MessageType messageType, String content) {
+        if (receiverId == null || messageType == null || content == null) {
             return true;
         }
 
         return sendId == receiverId;
+    }
+
+    public boolean invalidInputGroupChat(String groupChatId, MessageType messageType, String content) {
+        return groupChatId == null || messageType == null || content == null;
     }
 
     public ErrorCode checkMemberList(Set<Long> memberIdList) {

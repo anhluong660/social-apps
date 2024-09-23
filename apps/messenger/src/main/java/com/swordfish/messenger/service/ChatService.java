@@ -1,6 +1,7 @@
 package com.swordfish.messenger.service;
 
-import com.swordfish.messenger.dto.request.RequestMessage;
+import com.swordfish.messenger.dto.request.ReqChatBoxMessage;
+import com.swordfish.messenger.dto.request.ReqGroupChatMessage;
 import com.swordfish.messenger.integration.users.UserManagerFeign;
 import com.swordfish.messenger.integration.users.dto.AccountDto;
 import com.swordfish.messenger.model.ChatBoxModel;
@@ -11,8 +12,6 @@ import com.swordfish.messenger.utils.MessengerUtils;
 import com.swordfish.messenger.utils.SessionPropertyUtils;
 import com.swordfish.messenger.utils.SocketManager;
 import com.swordfish.utils.common.DateUtil;
-import com.swordfish.utils.common.RequestContextUtil;
-import com.swordfish.utils.enums.ErrorCode;
 import com.swordfish.utils.enums.RedisKey;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RList;
@@ -92,7 +91,7 @@ public class ChatService {
         }
     }
 
-    public String handleChatToUser(WebSocketSession session, RequestMessage requestMessage) {
+    public void handleChatToUser(WebSocketSession session, ReqChatBoxMessage requestMessage) {
         Set<String> chatBoxSet = SessionPropertyUtils.of(session).getChatBoxSet();
 
         long userId = this.getUserIdFromSession(session);
@@ -117,12 +116,10 @@ public class ChatService {
         messageModel.setCreateTime(DateUtil.nowUTC());
 
         chatBoxRepository.findAndPushMessageByChatBoxId(chatBoxId, messageModel);
-
-        return chatBoxId;
     }
 
-    public List<Long> handleGroupChat(long senderId, RequestMessage requestMessage) {
-        String groupChatId = requestMessage.getChatBoxId();
+    public List<Long> handleGroupChat(long senderId, ReqGroupChatMessage request) {
+        String groupChatId = request.getGroupChatId();
         final String GROUP_CHAT_KEY = String.format(RedisKey.GROUP_CHAT, groupChatId);
 
         RList<Long> memberIdsCache = redissonClient.getList(GROUP_CHAT_KEY);
@@ -144,8 +141,8 @@ public class ChatService {
 
         MessageModel messageModel = new MessageModel();
         messageModel.setAuthorId(senderId);
-        messageModel.setType(requestMessage.getMessageType());
-        messageModel.setContent(requestMessage.getContent());
+        messageModel.setType(request.getMessageType());
+        messageModel.setContent(request.getContent());
         messageModel.setCreateTime(DateUtil.nowUTC());
 
         groupChatRepository.findAndPushMessageByChatBoxId(groupChatId, messageModel);

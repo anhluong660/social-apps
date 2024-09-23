@@ -47,6 +47,11 @@ public class MessengerController {
         return messengerService.getMessageChatBox(chatBoxId, page);
     }
 
+//    @GetMapping
+//    public GeneralPageResponse<MessageDto> getGroupChat(@RequestParam String groupChatId, @RequestParam Integer page) {
+//
+//    }
+
     @PostMapping("/new-group-chat")
     public GeneralResponse<ResCreateGroupChat> createGroupChat(@Valid @RequestBody ReqCreateGroupChat request) {
         Set<Long> memberIdList = request.getMemberIdList();
