@@ -5,7 +5,7 @@ import com.swordfish.messenger.dto.response.ResponseMessage;
 import com.swordfish.messenger.integration.users.dto.AccountDto;
 import com.swordfish.messenger.service.ChatService;
 import com.swordfish.messenger.utils.ValidatorUtils;
-import com.swordfish.utils.common.SwordFishUtils;
+import com.swordfish.utils.common.JsonUtils;
 import com.swordfish.utils.dto.ResponseSocketBase;
 import com.swordfish.utils.enums.ErrorCode;
 import com.swordfish.utils.enums.SocketCode;
@@ -48,7 +48,7 @@ public class ChatController extends TextWebSocketHandler {
 
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
-        RequestMessage request = SwordFishUtils.fromJson(message.getPayload(), RequestMessage.class);
+        RequestMessage request = JsonUtils.fromJson(message.getPayload(), RequestMessage.class);
 
         if (request.getCode() == null || request.getMessageType() == null || request.getContent() == null) {
             chatService.send(session, ResponseSocketBase.fail());

@@ -9,7 +9,7 @@ import com.swordfish.messenger.repository.ChatBoxRepository;
 import com.swordfish.messenger.utils.MessengerUtils;
 import com.swordfish.messenger.utils.SessionPropertyUtils;
 import com.swordfish.messenger.utils.SocketManager;
-import com.swordfish.utils.common.SwordFishUtils;
+import com.swordfish.utils.common.DateUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -93,7 +93,7 @@ public class ChatService {
         messageModel.setAuthorId(userId);
         messageModel.setType(requestMessage.getMessageType());
         messageModel.setContent(requestMessage.getContent());
-        messageModel.setCreateTime(SwordFishUtils.nowUTC());
+        messageModel.setCreateTime(DateUtil.nowUTC());
 
         chatBoxRepository.findAndPushMessageByChatBoxId(chatBoxId, messageModel);
 

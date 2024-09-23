@@ -4,6 +4,7 @@ import com.swordfish.users.dto.response.ResFriendInfo;
 import com.swordfish.users.dto.response.ResUserInfo;
 import com.swordfish.users.service.UserManagerService;
 import com.swordfish.utils.common.RequestContextUtil;
+import com.swordfish.utils.dto.GeneralListResponse;
 import com.swordfish.utils.dto.GeneralResponse;
 import com.swordfish.utils.enums.ErrorCode;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,13 +45,13 @@ public class UserManagerController {
     }
 
     @GetMapping("/user-info-list")
-    public GeneralResponse<List<ResUserInfo>> getUserInfoList(@RequestBody List<Long> userIds) {
+    public GeneralListResponse<ResUserInfo> getUserInfoList(@RequestBody List<Long> userIds) {
         if (userIds == null || userIds.isEmpty()) {
-            return GeneralResponse.of(ErrorCode.PARAMS_INVALID);
+            return GeneralListResponse.of(ErrorCode.PARAMS_INVALID);
         }
 
         List<ResUserInfo> resUserInfoList = userManagerService.getUserInfoList(userIds);
-        return GeneralResponse.success(resUserInfoList);
+        return GeneralListResponse.success(resUserInfoList);
     }
 
     @PostMapping("/add-friend/{friendId}")
@@ -86,16 +87,16 @@ public class UserManagerController {
     }
 
     @GetMapping("/friends")
-    public GeneralResponse<List<ResFriendInfo>> getAllFriend() {
+    public GeneralListResponse<ResFriendInfo> getAllFriend() {
         long userId = RequestContextUtil.getUserId();
         List<ResFriendInfo> listRes = userManagerService.getAllFriend(userId);
-        return GeneralResponse.success(listRes);
+        return GeneralListResponse.success(listRes);
     }
 
     @GetMapping("/inviters")
-    public GeneralResponse<List<ResFriendInfo>> getAllInviter() {
+    public GeneralListResponse<ResFriendInfo> getAllInviter() {
         long userId = RequestContextUtil.getUserId();
         List<ResFriendInfo> listRes = userManagerService.getAllInviter(userId);
-        return GeneralResponse.success(listRes);
+        return GeneralListResponse.success(listRes);
     }
 }

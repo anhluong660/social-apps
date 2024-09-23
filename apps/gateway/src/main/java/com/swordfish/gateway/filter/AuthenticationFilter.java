@@ -1,6 +1,6 @@
 package com.swordfish.gateway.filter;
 
-import com.swordfish.utils.common.SwordFishUtils;
+import com.swordfish.utils.common.JsonUtils;
 import com.swordfish.utils.dto.InvalidResponse;
 import com.swordfish.utils.dto.ResponseHttp;
 import com.swordfish.utils.enums.ErrorCode;
@@ -82,7 +82,7 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
     private Mono<Void> responseBlock(ServerWebExchange exchange, String path) {
         HttpStatus httpStatus = HttpStatus.NOT_FOUND;
         ResponseHttp body = new ResponseHttp(httpStatus.value(), httpStatus.getReasonPhrase(), path);
-        String json = SwordFishUtils.toJson(body);
+        String json = JsonUtils.toJson(body);
 
         ServerHttpResponse response = exchange.getResponse();
         response.setStatusCode(httpStatus);
@@ -95,7 +95,7 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
         InvalidResponse body = new InvalidResponse();
         body.setError(ErrorCode.AUTHENTICATE_ERROR);
         body.setDetail(Map.of("message", message));
-        String json = SwordFishUtils.toJson(body);
+        String json = JsonUtils.toJson(body);
 
         ServerHttpResponse response = exchange.getResponse();
         DataBuffer buffer = response.bufferFactory().wrap(json.getBytes(StandardCharsets.UTF_8));

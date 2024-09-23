@@ -76,7 +76,7 @@
 ```json
 {
   "error": "SUCCESS",
-  "data": [
+  "list": [
     {
       "userId": 1,
       "nickName": "Nguyen Van A",
@@ -130,7 +130,7 @@
 ```json
 {
     "error": "SUCCESS",
-    "data": [
+    "list": [
         {
             "userId": 1,
             "nickName": "Nguyen Van A",
@@ -150,7 +150,7 @@
 ```json
 {
     "error": "SUCCESS",
-    "data": [
+    "list": [
         {
             "userId": 1,
             "nickName": "Nguyen Van A",
@@ -310,7 +310,7 @@
 ```json
 {
   "error": "SUCCESS",
-  "data": [
+  "list": [
     {
       "commentId": 6,
       "authorId": 3,

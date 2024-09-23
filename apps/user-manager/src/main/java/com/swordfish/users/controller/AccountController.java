@@ -4,6 +4,7 @@ import com.swordfish.users.dto.entities.LoginResult;
 import com.swordfish.users.dto.request.RequestLogin;
 import com.swordfish.users.dto.request.RequestRegister;
 import com.swordfish.users.service.AccountService;
+import com.swordfish.utils.dto.GeneralMapResponse;
 import com.swordfish.utils.dto.GeneralResponse;
 import com.swordfish.utils.enums.ErrorCode;
 import jakarta.validation.Valid;
@@ -27,13 +28,13 @@ public class AccountController {
     }
 
     @PostMapping("/login")
-    public GeneralResponse<Map<String, String>> login(@Valid @RequestBody RequestLogin request) {
+    public GeneralMapResponse<String> login(@Valid @RequestBody RequestLogin request) {
         LoginResult loginResult = accountService.login(request);
 
         if (loginResult.getError() == ErrorCode.SUCCESS) {
-            return GeneralResponse.success(Map.of("token", loginResult.getToken()));
+            return GeneralMapResponse.success(Map.of("token", loginResult.getToken()));
         } else {
-            return GeneralResponse.of(loginResult.getError());
+            return GeneralMapResponse.of(loginResult.getError());
         }
     }
 }

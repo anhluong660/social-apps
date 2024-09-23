@@ -1,6 +1,6 @@
 package com.swordfish.messenger.utils;
 
-import com.swordfish.utils.common.SwordFishUtils;
+import com.swordfish.utils.common.JsonUtils;
 import jakarta.annotation.PreDestroy;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
@@ -33,7 +33,7 @@ public class SocketManager {
     }
 
     public void send(WebSocketSession session, Object response) throws IOException {
-        String jsonRes = SwordFishUtils.toJson(response);
+        String jsonRes = JsonUtils.toJson(response);
         session.sendMessage(new TextMessage(jsonRes));
     }
 

@@ -10,6 +10,7 @@ import com.swordfish.users.repository.AccountRepository;
 import com.swordfish.users.repository.UserRepository;
 import com.swordfish.users.utils.JwtUtil;
 import com.swordfish.users.utils.UserIdGenerator;
+import com.swordfish.utils.common.DateUtil;
 import com.swordfish.utils.common.SwordFishUtils;
 import com.swordfish.utils.enums.ErrorCode;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +43,7 @@ public class AccountService {
 
         Long newUserId = userIdGenerator.getNewId();
         String passwordHash = SwordFishUtils.hashMd5(request.getPassword());
-        Date dateOfBirth = SwordFishUtils.convertToUTCDate(request.getDateOfBirth());
+        Date dateOfBirth = DateUtil.convertToUTCDate(request.getDateOfBirth());
 
         AccountModel accountModel = new AccountModel();
         accountModel.setUserId(newUserId);

@@ -9,6 +9,7 @@ import com.swordfish.social.dto.response.ResponsePost;
 import com.swordfish.social.service.PostService;
 import com.swordfish.social.utils.ValidatorUtils;
 import com.swordfish.utils.common.RequestContextUtil;
+import com.swordfish.utils.dto.GeneralListResponse;
 import com.swordfish.utils.dto.GeneralPageResponse;
 import com.swordfish.utils.dto.GeneralResponse;
 import com.swordfish.utils.enums.ErrorCode;
@@ -96,12 +97,12 @@ public class PostController {
     }
 
     @GetMapping("/comments/{postId}")
-    public GeneralResponse<List<ResponseComment>> getCommentList(@PathVariable Long postId) {
+    public GeneralListResponse<ResponseComment> getCommentList(@PathVariable Long postId) {
         if (!postService.existPost(postId)) {
-            return GeneralResponse.of(ErrorCode.NOT_FOUND);
+            return GeneralListResponse.of(ErrorCode.NOT_FOUND);
         }
 
         List<ResponseComment> responseCommentList = postService.getCommentList(postId);
-        return GeneralResponse.success(responseCommentList);
+        return GeneralListResponse.success(responseCommentList);
     }
 }
