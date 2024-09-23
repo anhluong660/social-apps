@@ -17,6 +17,8 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
+import java.util.List;
+
 @Slf4j
 @Controller
 public class ChatController extends TextWebSocketHandler {
@@ -61,7 +63,7 @@ public class ChatController extends TextWebSocketHandler {
                 long senderId = chatService.getUserIdFromSession(session);
 
                 if (validatorUtils.invalidInputChatUser(senderId, receiverId)) {
-                    chatService.send(session, ResponseSocketBase.fail());
+                    chatService.send(session, ResponseSocketBase.of(ErrorCode.PARAMS_INVALID));
                     return;
                 }
 
@@ -79,9 +81,30 @@ public class ChatController extends TextWebSocketHandler {
 
             case CHAT_GROUP -> {
                 if (request.getChatBoxId() == null) {
-                    chatService.send(session, ResponseSocketBase.fail());
+                    chatService.send(session, ResponseSocketBase.of(ErrorCode.PARAMS_INVALID));
                     return;
                 }
+
+                long senderId = chatService.getUserIdFromSession(session);
+
+                List<Long> memberIds = chatService.handleGroupChat(senderId, request);
+
+                if (memberIds.isEmpty()) {
+                    chatService.send(session, ResponseSocketBase.of(ErrorCode.NOT_FOUND));
+                    return;
+                }
+
+                ResponseMessage response = new ResponseMessage();
+                response.setCode(SocketCode.CHAT_GROUP);
+                response.setChatBoxId(request.getChatBoxId());
+                response.setSenderId(senderId);
+                response.setMessageType(request.getMessageType());
+                response.setContent(request.getContent());
+
+                chatService.send(memberIds.stream()
+                        .filter(memberId -> memberId != senderId)
+                        .toList(),
+                        response);
             }
         }
     }

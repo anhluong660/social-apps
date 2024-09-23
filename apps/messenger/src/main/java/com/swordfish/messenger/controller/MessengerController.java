@@ -7,6 +7,7 @@ import com.swordfish.messenger.dto.response.ResGroupChat;
 import com.swordfish.messenger.service.MessengerService;
 import com.swordfish.messenger.utils.MessengerUtils;
 import com.swordfish.messenger.utils.ValidatorUtils;
+import com.swordfish.utils.dto.GeneralListResponse;
 import com.swordfish.utils.dto.GeneralPageResponse;
 import com.swordfish.utils.dto.GeneralResponse;
 import com.swordfish.utils.enums.ErrorCode;
@@ -63,16 +64,8 @@ public class MessengerController {
     }
 
     @GetMapping("/group-chat-list")
-    public GeneralPageResponse<ResGroupChat> getGroupChatList() {
+    public GeneralListResponse<ResGroupChat> getGroupChatList() {
         List<ResGroupChat> resGroupChatList = messengerService.getGroupChatList();
-
-        GeneralPageResponse<ResGroupChat> response = new GeneralPageResponse<>();
-        response.setError(ErrorCode.SUCCESS);
-        response.setCurrentPage(1);
-        response.setPageSize(resGroupChatList.size());
-        response.setTotal(resGroupChatList.size());
-        response.setList(resGroupChatList);
-
-        return response;
+        return GeneralListResponse.success(resGroupChatList);
     }
 }

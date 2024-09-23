@@ -6,17 +6,26 @@ import com.swordfish.messenger.integration.users.dto.AccountDto;
 import com.swordfish.messenger.model.ChatBoxModel;
 import com.swordfish.messenger.model.MessageModel;
 import com.swordfish.messenger.repository.ChatBoxRepository;
+import com.swordfish.messenger.repository.GroupChatRepository;
 import com.swordfish.messenger.utils.MessengerUtils;
 import com.swordfish.messenger.utils.SessionPropertyUtils;
 import com.swordfish.messenger.utils.SocketManager;
 import com.swordfish.utils.common.DateUtil;
+import com.swordfish.utils.common.RequestContextUtil;
+import com.swordfish.utils.enums.ErrorCode;
+import com.swordfish.utils.enums.RedisKey;
 import lombok.extern.slf4j.Slf4j;
+import org.redisson.api.RList;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.io.IOException;
+import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 @Slf4j
@@ -30,10 +39,16 @@ public class ChatService {
     private SocketManager socketManager;
 
     @Autowired
+    private RedissonClient redissonClient;
+
+    @Autowired
     private MessengerUtils messengerUtils;
 
     @Autowired
     private ChatBoxRepository chatBoxRepository;
+
+    @Autowired
+    private GroupChatRepository groupChatRepository;
 
     public AccountDto verifyToken(String token) {
         return userManagerFeign.getAccountInfo(token);
@@ -71,6 +86,12 @@ public class ChatService {
         }
     }
 
+    public void send(List<Long> userIds, Object response) {
+        for (long userId : userIds) {
+            send(userId, response);
+        }
+    }
+
     public String handleChatToUser(WebSocketSession session, RequestMessage requestMessage) {
         Set<String> chatBoxSet = SessionPropertyUtils.of(session).getChatBoxSet();
 
@@ -98,6 +119,38 @@ public class ChatService {
         chatBoxRepository.findAndPushMessageByChatBoxId(chatBoxId, messageModel);
 
         return chatBoxId;
+    }
+
+    public List<Long> handleGroupChat(long senderId, RequestMessage requestMessage) {
+        String groupChatId = requestMessage.getChatBoxId();
+        final String GROUP_CHAT_KEY = String.format(RedisKey.GROUP_CHAT, groupChatId);
+
+        RList<Long> memberIdsCache = redissonClient.getList(GROUP_CHAT_KEY);
+        List<Long> memberIds = memberIdsCache
+                .readAll()
+                .stream()
+                .toList();
+
+        if (memberIds.isEmpty()) {
+            memberIds = groupChatRepository.getMemberIdsByGroupChatId(groupChatId);
+
+            if (memberIds.isEmpty()) {
+                return Collections.emptyList();
+            }
+
+            memberIdsCache.addAll(memberIds);
+            memberIdsCache.expire(Duration.ofHours(1));
+        }
+
+        MessageModel messageModel = new MessageModel();
+        messageModel.setAuthorId(senderId);
+        messageModel.setType(requestMessage.getMessageType());
+        messageModel.setContent(requestMessage.getContent());
+        messageModel.setCreateTime(DateUtil.nowUTC());
+
+        groupChatRepository.findAndPushMessageByChatBoxId(groupChatId, messageModel);
+
+        return memberIds;
     }
 
 
