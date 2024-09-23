@@ -6,10 +6,13 @@ CREATE TABLE Post
 	Id BIGINT AUTO_INCREMENT,
     AuthorId BIGINT NOT NULL,
     CreateTime TIMESTAMP NOT NULL,
+    PostType VARCHAR(20) NOT NULL,
     Content VARCHAR(2000),
     MediaLink VARCHAR(200),
     PRIMARY KEY (ID)
 );
+
+CREATE INDEX idx_author ON Post(AuthorId);
 
 CREATE TABLE Likes
 (

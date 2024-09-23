@@ -7,6 +7,7 @@ import com.swordfish.social.dto.response.ResponseComment;
 import com.swordfish.social.dto.response.ResponseLikePost;
 import com.swordfish.social.dto.response.ResponsePost;
 import com.swordfish.social.service.PostService;
+import com.swordfish.social.utils.ValidatorUtils;
 import com.swordfish.utils.common.RequestContextUtil;
 import com.swordfish.utils.dto.GeneralPageResponse;
 import com.swordfish.utils.dto.GeneralResponse;
@@ -24,6 +25,9 @@ import java.util.List;
 
 @RestController
 public class PostController {
+
+    @Autowired
+    private ValidatorUtils validatorUtils;
 
     @Autowired
     private PostService postService;
@@ -46,9 +50,13 @@ public class PostController {
     }
 
     @GetMapping("/post-list")
-    public GeneralPageResponse<ResponsePost> getPostList(@RequestParam Integer page) {
+    public GeneralPageResponse<ResponsePost> getPostList(@RequestParam String type, @RequestParam Integer page) {
+        if (validatorUtils.invalidPostType(type) || validatorUtils.invalidPage(page)) {
+            return GeneralPageResponse.of(ErrorCode.PARAMS_INVALID);
+        }
+
         long userId = RequestContextUtil.getUserId();
-        return postService.getPostList(userId, page);
+        return postService.getPostList(userId, type, page);
     }
 
     @GetMapping("/post/{postId}")

@@ -224,6 +224,7 @@
             "authorName": "Nguyen Van A",
             "authorAvatar": "avatar.png",
             "createTime": "2024-09-11T04:19:05Z",
+            "postType": "IMAGE",
             "content": "This is my post",
             "mediaLink": "http://image.jpg",
             "numLikes": 100,
@@ -236,7 +237,7 @@
 
 ### Get Post List
 - Method: GET
-- Path: [/social-service/post-list?page=1]()
+- Path: [/social-service/post-list?type=IMAGE&page=1]()
 - Response:
 ```json
 {
@@ -251,6 +252,7 @@
             "authorName": "Nguyen Van A",
             "authorAvatar": "avatar.png",
             "createTime": "2024-09-11T04:19:05Z",
+            "postType": "IMAGE",
             "content": "This is my post",
             "mediaLink": "http://image.jpg",
             "numLikes": 100,

@@ -10,11 +10,11 @@ public interface PostMapper {
 
     int insertNewPost(PostModel postModel);
 
-    List<PostModel> findPostByUserId(Long userId);
+    List<PostModel> findPostByAuthorId(Long authorId);
 
-    List<PostModel> findPostByUserIdList(List<Long> userIdList, Long userId);
+    List<PostModel> findPostByAuthorIdList(List<Long> authorIdList, Long userId, String postType);
 
     int existPost(Long postId);
 
-    PostModel findPostById(Long postId);
+    PostModel findPostById(Long postId, Long userId);
 }

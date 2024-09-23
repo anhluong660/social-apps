@@ -6,6 +6,7 @@
         <id column="Id" jdbcType="BIGINT" property="id" />
         <result column="AuthorId" jdbcType="BIGINT" property="authorId" />
         <result column="CreateTime" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="PostType" jdbcType="VARCHAR" property="postType"/>
         <result column="Content" jdbcType="VARCHAR" property="content" />
         <result column="MediaLink" jdbcType="VARCHAR" property="mediaLink" />
         <result column="IsLiked" jdbcType="BOOLEAN" property="isLiked"/>
@@ -14,11 +15,11 @@
     </resultMap>
 
     <insert id="insertNewPost" parameterType="PostModel">
-        INSERT INTO Post (AuthorId, CreateTime, Content, MediaLink)
-        VALUES (#{authorId}, #{createTime}, #{content}, #{mediaLink})
+        INSERT INTO Post (AuthorId, CreateTime, PostType, Content, MediaLink)
+        VALUES (#{authorId}, #{createTime}, #{postType}, #{content}, #{mediaLink})
     </insert>
 
-    <select id="findPostByUserId" resultMap="PostModel">
+    <select id="findPostByAuthorId" resultMap="PostModel">
         SELECT
             Post_Likes.*,
             COUNT(comments.Id) AS CommentCount
@@ -26,11 +27,11 @@
             SELECT
                 post.*,
                 COUNT(likes.Id) AS LikeCount,
-                (CASE WHEN SUM(likes.UserId = #{userId}) > 0 THEN 1 ELSE 0 END) AS IsLiked
+                (CASE WHEN SUM(likes.UserId = #{authorId}) > 0 THEN 1 ELSE 0 END) AS IsLiked
             FROM
                 post
             LEFT JOIN likes ON post.Id = likes.PostId
-            WHERE post.AuthorId = #{userId}
+            WHERE post.AuthorId = #{authorId}
             GROUP BY post.Id
         ) AS Post_Likes
         LEFT JOIN comments ON Post_Likes.Id = comments.PostId
@@ -49,7 +50,7 @@
             SELECT
                 post.*,
                 COUNT(likes.Id) AS LikeCount,
-                (CASE WHEN SUM(likes.UserId = post.AuthorId) > 0 THEN 1 ELSE 0 END) AS IsLiked
+                (CASE WHEN SUM(likes.UserId = #{userId}) > 0 THEN 1 ELSE 0 END) AS IsLiked
             FROM
                 post
             LEFT JOIN likes ON post.Id = likes.PostId
@@ -60,7 +61,7 @@
         GROUP BY Post_Likes.Id
     </select>
 
-    <select id="findPostByUserIdList" resultMap="PostModel">
+    <select id="findPostByAuthorIdList" resultMap="PostModel">
         SELECT
             Post_Likes.*,
             COUNT(comments.Id) AS CommentCount
@@ -73,10 +74,11 @@
                 post
             LEFT JOIN likes ON post.Id = likes.PostId
             WHERE post.AuthorId IN
-                <foreach item="id" index="index" collection="userIdList"
+                <foreach item="id" index="index" collection="authorIdList"
                          open="(" separator="," close=")">
                     #{id}
                 </foreach>
+                AND post.PostType = #{postType}
             GROUP BY post.Id
         ) AS Post_Likes
         LEFT JOIN comments ON Post_Likes.Id = comments.PostId
