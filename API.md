@@ -360,14 +360,35 @@
 
 ---
 
-### Web Socket Chat
+### Chat Box List
+- Method: GET
+- Path: [/messenger/chat-box-list]()
+- Response:
+```json
+{
+    "error": "SUCCESS",
+    "list": [
+        {
+            "chatBoxId": "2-1",
+            "receiverId": 2
+        },
+        {
+            "chatBoxId": "3-1",
+            "receiverId": 3
+        }
+    ]
+}
+```
+
+---
+
+### Web Socket User Chat
 - Method: WebSocket
 - Path: [ws://localhost:8080/messenger/websocket/chat]()
 - Request:
 ```json
 {
     "code": "CHAT_USER",
-    "chatBoxId": "abc_123",
     "receiverId": 2,
     "messageType": "TEXT",
     "content": "Hello World"
@@ -377,10 +398,86 @@
 ```json
 {
     "code": "CHAT_USER",
-    "chatBoxId": "abc_123",
     "senderId": 3,
     "messageType": "TEXT",
     "content": "Hello World"
+}
+```
+
+---
+
+### Group Chat List
+- Method: GET
+- Path: [/messenger/group-chat-list]()
+- Response:
+```json
+{
+    "error": "SUCCESS",
+    "list": [
+        {
+            "groupChatId": "71a0d78d-67a2-4927-8bb8-559a781bd803",
+            "name": "New Group",
+            "memberList": [
+                2,
+                3,
+                1
+            ]
+        }
+    ]
+}
+```
+
+---
+
+### Get Group Chat
+- Method: GET
+- Path: [/messenger/group-chat?groupChatId=71a0d78d-67a2-4927-8bb8-559a781bd803&page=1]()
+- Response:
+```json
+{
+    "error": "SUCCESS",
+    "currentPage": 1,
+    "pageSize": 2,
+    "total": 10,
+    "list": [
+        {
+            "authorId": 1,
+            "type": "TEXT",
+            "content": "Hello Group !",
+            "createTime": "2024-09-23T09:21:49.470+00:00"
+        },
+        {
+            "authorId": 2,
+            "type": "TEXT",
+            "content": "Hello Group !",
+            "createTime": "2024-09-23T09:22:30.886+00:00"
+        }
+    ]
+}
+```
+
+---
+
+### Web Socket Group Chat
+- Method: WebSocket
+- Path: [ws://localhost:8080/messenger/websocket/chat]()
+- Request:
+```json
+{
+    "code": "CHAT_GROUP",
+    "groupChatId": "123-abc-456-xyz",
+    "messageType": "TEXT",
+    "content": "Hello Group"
+}
+```
+- Response:
+```json
+{
+    "code": "CHAT_GROUP",
+    "groupChatId": "123-abc-456-xyz",
+    "senderId": 3,
+    "messageType": "TEXT",
+    "content": "Hello Group"
 }
 ```
 
