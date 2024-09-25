@@ -7,7 +7,9 @@ import com.swordfish.users.integration.messenger.MessengerFeign;
 import com.swordfish.users.model.UserModel;
 import com.swordfish.users.repository.UserRepoCustom;
 import com.swordfish.users.repository.UserRepository;
+import com.swordfish.users.utils.MetricUtils;
 import com.swordfish.utils.enums.ErrorCode;
+import com.swordfish.utils.enums.MetricAction;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,6 +30,9 @@ public class UserManagerService {
 
     @Autowired
     private MessengerFeign messengerFeign;
+
+    @Autowired
+    private MetricUtils metricUtils;
 
     public ResUserInfo getUserInfo(long userId) {
         UserModel userModel = userRepository.findByUserId(userId);
@@ -109,9 +114,11 @@ public class UserManagerService {
         if (userModel.getInviters().contains(friendId)) {
             userRepository.findAndMatchFriendByUserId(userId, friendId);
             userRepository.findAndMatchFriendByUserId(friendId, userId);
+            metricUtils.log(userId, MetricAction.MATCH_FRIEND, friendId);
         } else {
             userRepository.findAndAddRequesterByUserId(userId, friendId);
             userRepository.findAndAddInviterByUserId(friendId, userId);
+            metricUtils.log(userId, MetricAction.ADD_FRIEND, friendId);
         }
 
         return ErrorCode.SUCCESS;
@@ -121,6 +128,7 @@ public class UserManagerService {
     public ErrorCode removeFriend(long userId, long friendId) {
         userRepository.findAndRemoveFriendByUserId(userId, friendId);
         userRepository.findAndRemoveFriendByUserId(friendId, userId);
+        metricUtils.log(userId, MetricAction.REMOVE_FRIEND, friendId);
         return ErrorCode.SUCCESS;
     }
 

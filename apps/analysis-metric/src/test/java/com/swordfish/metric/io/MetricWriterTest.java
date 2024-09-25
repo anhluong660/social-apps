@@ -17,9 +17,10 @@ public class MetricWriterTest {
 
     @Test
     public void testMetricLog() throws InterruptedException {
-        kafkaTemplate.send(MetricTopic.USER_MANAGER, "123|Login|Welcome");
-        kafkaTemplate.send(MetricTopic.MESSENGER, "123|Chat|Hello");
-        kafkaTemplate.send(MetricTopic.SOCIAL_SERVICE, "123|Post|Feeling");
+        long current = System.currentTimeMillis();
+        kafkaTemplate.send(MetricTopic.USER_MANAGER, current + "|123|Login|Welcome");
+        kafkaTemplate.send(MetricTopic.MESSENGER, current + "|123|Chat|Hello");
+        kafkaTemplate.send(MetricTopic.SOCIAL_SERVICE, current + "|123|Post|Feeling");
         Thread.sleep(2000);
     }
 }

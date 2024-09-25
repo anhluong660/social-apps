@@ -9,10 +9,12 @@ import com.swordfish.users.model.UserModel;
 import com.swordfish.users.repository.AccountRepository;
 import com.swordfish.users.repository.UserRepository;
 import com.swordfish.users.utils.JwtUtil;
+import com.swordfish.users.utils.MetricUtils;
 import com.swordfish.users.utils.UserIdGenerator;
 import com.swordfish.utils.common.DateUtil;
 import com.swordfish.utils.common.SwordFishUtils;
 import com.swordfish.utils.enums.ErrorCode;
+import com.swordfish.utils.enums.MetricAction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,6 +35,9 @@ public class AccountService {
 
     @Autowired
     private JwtUtil jwtUtil;
+
+    @Autowired
+    private MetricUtils metricUtils;
 
     public ErrorCode register(RequestRegister request) {
         String username = request.getUsername().toLowerCase();
@@ -62,6 +67,8 @@ public class AccountService {
         userModel.setRequests(new ArrayList<>());
         userRepository.save(userModel);
 
+        metricUtils.log(newUserId, MetricAction.REGISTER, username, request.getDateOfBirth().split("T")[0], request.getSex());
+
         return ErrorCode.SUCCESS;
     }
 
@@ -84,6 +91,8 @@ public class AccountService {
         LoginResult loginResult = new LoginResult();
         loginResult.setError(ErrorCode.SUCCESS);
         loginResult.setToken(jwtToken);
+
+        metricUtils.log(accountModel.getUserId(), MetricAction.LOGIN, username);
 
         return loginResult;
     }
