@@ -24,6 +24,7 @@
 		<module>apps/lib-utils</module>
         <module>apps/file-service</module>
         <module>apps/discovery</module>
+        <module>apps/analysis-metric</module>
     </modules>
 
 	<properties>

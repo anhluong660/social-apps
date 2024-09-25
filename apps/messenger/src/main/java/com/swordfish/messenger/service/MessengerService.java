@@ -8,11 +8,13 @@ import com.swordfish.messenger.model.MessageModel;
 import com.swordfish.messenger.repository.ChatBoxRepository;
 import com.swordfish.messenger.repository.GroupChatRepository;
 import com.swordfish.messenger.utils.MessengerUtils;
+import com.swordfish.messenger.utils.MetricUtils;
 import com.swordfish.messenger.utils.SessionPropertyUtils;
 import com.swordfish.messenger.utils.SocketManager;
 import com.swordfish.utils.common.RequestContextUtil;
 import com.swordfish.utils.dto.GeneralPageResponse;
 import com.swordfish.utils.enums.ErrorCode;
+import com.swordfish.utils.enums.MetricAction;
 import com.swordfish.utils.enums.RedisKey;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.BeanUtils;
@@ -45,6 +47,9 @@ public class MessengerService {
 
     @Autowired
     private MessengerUtils messengerUtils;
+
+    @Autowired
+    private MetricUtils metricUtils;
 
     public Map<Long, Boolean> getOnlineStatusByUserIdList(List<Long> userIdList) {
         return userIdList.stream()
@@ -130,6 +135,8 @@ public class MessengerService {
         groupChatModel.setMessageList(new ArrayList<>());
 
         groupChatRepository.save(groupChatModel);
+
+        metricUtils.log(MetricAction.CREATE_GROUP, groupChatId, groupName, memberIdList);
         return groupChatId;
     }
 

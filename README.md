@@ -10,6 +10,7 @@ Microservice Application & Spring Boot Framework
 - MongoDB
 - Mysql Database
 - Redis
+- Kafka
 
 ---
 ### Service In Apps
@@ -19,8 +20,9 @@ Microservice Application & Spring Boot Framework
 + Messenger: Port 9002
 + Social Service: Port 9003
 + +
-+ File Service: Port 9100
++ File Service: Port 9200
 + Server Discovery: Port 8781
++ Analysis Metric: Port 9300
 
 ---
 ### Apps Introduction
@@ -29,3 +31,5 @@ Microservice Application & Spring Boot Framework
 + Server discovery support balancing with Eureka Netflix
 + Generate unique user id by redis lock
 + Chat Friend and Group Chat with Web Socket
++ Cache member list by redisson
++ Use Kafka send log tracking
