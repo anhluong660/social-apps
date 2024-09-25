@@ -10,6 +10,7 @@ Microservice Application & Spring Boot Framework
 - MongoDB
 - Mysql Database
 - Redis
+- Kafka
 
 ---
 ### Service In Apps
@@ -30,3 +31,5 @@ Microservice Application & Spring Boot Framework
 + Server discovery support balancing with Eureka Netflix
 + Generate unique user id by redis lock
 + Chat Friend and Group Chat with Web Socket
++ Cache member list by redisson
++ Use Kafka send log tracking

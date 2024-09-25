@@ -9,9 +9,11 @@ import com.swordfish.messenger.model.MessageModel;
 import com.swordfish.messenger.repository.ChatBoxRepository;
 import com.swordfish.messenger.repository.GroupChatRepository;
 import com.swordfish.messenger.utils.MessengerUtils;
+import com.swordfish.messenger.utils.MetricUtils;
 import com.swordfish.messenger.utils.SessionPropertyUtils;
 import com.swordfish.messenger.utils.SocketManager;
 import com.swordfish.utils.common.DateUtil;
+import com.swordfish.utils.enums.MetricAction;
 import com.swordfish.utils.enums.RedisKey;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RList;
@@ -49,6 +51,9 @@ public class ChatService {
     @Autowired
     private GroupChatRepository groupChatRepository;
 
+    @Autowired
+    private MetricUtils metricUtils;
+
     public AccountDto verifyToken(String token) {
         return userManagerFeign.getAccountInfo(token);
     }
@@ -56,6 +61,7 @@ public class ChatService {
     public void addSession(long userId, WebSocketSession session) {
         socketManager.addSession(userId, session);
         SessionPropertyUtils.of(session).setUserId(userId);
+        metricUtils.log(userId, MetricAction.CONNECT_MESSENGER);
     }
 
     public long getUserIdFromSession(WebSocketSession session) {

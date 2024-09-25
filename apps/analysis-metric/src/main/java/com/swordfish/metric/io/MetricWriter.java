@@ -28,7 +28,7 @@ public class MetricWriter {
     private final Queue<String> queue = new ConcurrentLinkedQueue<>();
 
     public void log(String line) {
-        queue.add(System.currentTimeMillis() + "|" + line);
+        queue.add(line);
     }
 
     @PostConstruct

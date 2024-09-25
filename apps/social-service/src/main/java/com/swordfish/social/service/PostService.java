@@ -10,11 +10,13 @@ import com.swordfish.social.model.PostModel;
 import com.swordfish.social.repository.CommentMapper;
 import com.swordfish.social.repository.LikeMapper;
 import com.swordfish.social.repository.PostMapper;
+import com.swordfish.social.utils.MetricUtils;
 import com.swordfish.social.utils.SocialUtils;
 import com.swordfish.utils.common.DateUtil;
 import com.swordfish.utils.common.RequestContextUtil;
 import com.swordfish.utils.dto.GeneralPageResponse;
 import com.swordfish.utils.enums.ErrorCode;
+import com.swordfish.utils.enums.MetricAction;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -45,6 +47,9 @@ public class PostService {
     @Autowired
     private SocialUtils socialUtils;
 
+    @Autowired
+    private MetricUtils metricUtils;
+
     public ErrorCode addNewPost(long authorId, String content, String mediaLink) {
         PostModel postModel = new PostModel();
         postModel.setAuthorId(authorId);
@@ -55,6 +60,8 @@ public class PostService {
 
         try {
             int result = postMapper.insertNewPost(postModel);
+
+            metricUtils.log(authorId, MetricAction.CREATE_POST, PostType.of(mediaLink));
             return result == 1 ? ErrorCode.SUCCESS : ErrorCode.FAIL;
         } catch (Exception ex) {
             log.error("Exception PostServer.addNewPost: {}", ex.getMessage());
@@ -191,9 +198,11 @@ public class PostService {
     public boolean likePost(long userId, long postId) {
         if (likeMapper.isLiked(userId, postId) > 0) {
             likeMapper.dislikePost(userId, postId);
+            metricUtils.log(userId, MetricAction.DISLIKE_POST, postId);
             return false;
         } else {
             likeMapper.likePost(userId, postId);
+            metricUtils.log(userId, MetricAction.LIKE_POST, postId);
             return true;
         }
     }
@@ -205,6 +214,7 @@ public class PostService {
         commentModel.setContent(content);
 
         commentMapper.insertComment(commentModel);
+        metricUtils.log(userId, MetricAction.COMMENT, postId);
     }
 
     public List<ResponseComment> getCommentList(long postId) {
