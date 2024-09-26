@@ -4,12 +4,13 @@
     <parent>
         <groupId>com.swordfish</groupId>
         <artifactId>server</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>1.0-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
     <artifactId>lib-utils</artifactId>
     <packaging>jar</packaging>
+    <version>1.0-SNAPSHOT</version>
 
     <name>lib-utils</name>
     <url>http://maven.apache.org</url>
@@ -25,4 +26,11 @@
             <version>2.10.1</version>
         </dependency>
     </dependencies>
+
+    <distributionManagement>
+        <repository>
+            <id>repository</id>
+            <url>file://${settings.localRepository}</url>
+        </repository>
+    </distributionManagement>
 </project>
