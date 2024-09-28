@@ -39,10 +39,4 @@
         </dependency>
     </dependencies>
 
-    <distributionManagement>
-        <repository>
-            <id>repository</id>
-            <url>file://${settings.localRepository}</url>
-        </repository>
-    </distributionManagement>
 </project>

@@ -17,13 +17,13 @@
 
 	<description>Spring Boot Social Networking Apps</description>
 	<modules>
+		<module>apps/lib-utils</module>
+		<module>apps/discovery</module>
 		<module>apps/gateway</module>
 		<module>apps/user-manager</module>
 		<module>apps/social-service</module>
 		<module>apps/messenger</module>
-		<module>apps/lib-utils</module>
         <module>apps/file-service</module>
-        <module>apps/discovery</module>
         <module>apps/analysis-metric</module>
     </modules>
 
