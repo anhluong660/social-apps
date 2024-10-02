@@ -1,0 +1,65 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: gateway
+
+  # Route configuration
+  cloud:
+    gateway:
+      routes:
+        - id: user-manager
+          uri: lb://user-manager
+          predicates:
+            - Path=/user-manager/**
+          filters:
+            - StripPrefix=1
+
+        - id: messenger
+          uri: lb://messenger
+          predicates:
+            - Path=/messenger/**
+          filters:
+            - StripPrefix=1
+
+        - id: social-service
+          uri: lb://social-service
+          predicates:
+            - Path=/social-service/**
+          filters:
+            - StripPrefix=1
+
+      discovery:
+        locator:
+          enabled: true
+          lowerCaseServiceId: true
+
+      httpclient:
+        connect-timeout: 3000
+        response-timeout: 5000
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+    gateway:
+      enabled: true
+
+eureka:
+  client:
+    enabled: true
+    serviceUrl:
+      defaultZone: http://netflix-discovery:8761/eureka/
+    registry-fetch-interval-seconds: 10
+  instance:
+    lease-expiration-duration-in-seconds: 0
+    lease-renewal-interval-in-seconds: 3
+    prefer-ip-address: true
+
+security:
+  jwt-key: "SpringBootSocialNetworkingApplication-JwtKey-2024"
