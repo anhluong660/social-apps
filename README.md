@@ -11,6 +11,7 @@ Microservice Application & Spring Boot Framework
 - Mysql Database
 - Redis
 - Kafka
+- Docker
 
 ---
 ### Service In Apps
@@ -33,3 +34,4 @@ Microservice Application & Spring Boot Framework
 + Chat Friend and Group Chat with Web Socket
 + Cache member list by redisson
 + Use Kafka send log tracking
++ Deploy by docker
