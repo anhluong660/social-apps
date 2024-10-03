@@ -66,6 +66,41 @@ services:
     networks:
       - social
 
+  file-service:
+    image: file-service:latest
+    ports:
+      - "9200:9200"
+    depends_on:
+      - netflix-discovery
+    volumes:
+      - ./data/file-service/logs:/app/logs
+    networks:
+      - social
+
+  social-service:
+    image: social-service:latest
+    ports:
+      - "9003:9003"
+    depends_on:
+      - netflix-discovery
+      - apache-kafka
+    volumes:
+      - ./data/social-service/logs:/app/logs
+    networks:
+      - social
+
+  messenger:
+    image: messenger:latest
+    ports:
+      - "9002:9002"
+    depends_on:
+      - netflix-discovery
+      - apache-kafka
+    volumes:
+      - ./data/messenger/logs:/app/logs
+    networks:
+      - social
+
 networks:
   social:
     external: true
